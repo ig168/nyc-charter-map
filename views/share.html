@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <title>Shared shortlist · NYC Charter School Finder</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="page">
+  <header class="topbar">
+    <a class="brand" href="/"><img src="/favicon.svg" alt="" width="30" height="30"><span class="brand__name" data-i18n="appName">NYC Charter School Finder</span></a>
+    <div class="topbar__right">
+      <button type="button" class="lang-btn" id="lang-toggle">ES</button>
+      <a class="btn btn--gold btn--sm" href="/" data-i18n="exploreSchools">Explore schools</a>
+    </div>
+  </header>
+  <main class="page__inner" id="main">
+    <h1 class="my__title" data-i18n="sharedTitle">Shared shortlist</h1>
+    <p class="muted" id="share-sub" data-i18n="sharedSub">A read-only list of charter schools someone saved.</p>
+    <div id="share-body" role="status"><p class="muted" data-i18n="loading">Loading…</p></div>
+  </main>
+  <script src="/js/i18n.js" defer></script>
+  <script src="/js/core.js" defer></script>
+  <script src="/js/share.js" defer></script>
+</body>
+</html>

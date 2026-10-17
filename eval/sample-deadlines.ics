@@ -1,0 +1,44 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//NYC Charter School Finder//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Charter school deadlines
+BEGIN:VEVENT
+UID:x-kipp-academy-elementary-school-deadline-2026-04-01@nyc-charter-finder
+DTSTAMP:20261017T215629Z
+DTSTART;VALUE=DATE:20260401
+DTEND;VALUE=DATE:20260402
+SUMMARY:Application deadline: KIPP Academy Elementary School
+DESCRIPTION:Apply: https://kippnyc.my.site.com/Apply/GuestApplication
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:m-kipp-infinity-elementary-school-deadline-2027-03-15@nyc-charter-finde
+ r
+DTSTAMP:20261017T215629Z
+DTSTART;VALUE=DATE:20270315
+DTEND;VALUE=DATE:20270316
+SUMMARY:Application deadline: KIPP Infinity Elementary School
+DESCRIPTION:Apply: https://kippnyc.my.site.com/Apply/GuestApplication
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:k-kipp-amp-elementary-school-deadline-2027-04-01@nyc-charter-finder
+DTSTAMP:20261017T215629Z
+DTSTART;VALUE=DATE:20270401
+DTEND;VALUE=DATE:20270402
+SUMMARY:Application deadline: KIPP AMP Elementary School
+DESCRIPTION:Apply: https://kippnyc.my.site.com/Apply/GuestApplication
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:k-kipp-amp-elementary-school-lottery-2027-04-15@nyc-charter-finder
+DTSTAMP:20261017T215629Z
+DTSTART;VALUE=DATE:20270415
+DTEND;VALUE=DATE:20270416
+SUMMARY:Lottery: KIPP AMP Elementary School
+DESCRIPTION:Apply: https://kippnyc.my.site.com/Apply/GuestApplication
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR

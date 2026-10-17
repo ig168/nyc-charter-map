@@ -1,0 +1,1519 @@
+{
+ "sources": {
+  "seed": "260 schools (NYC DOE 2019-20 School Locations, wg9x-4ke6)",
+  "nysed": "299 NYC charter licenses (NYSED directory as of 2025-09-02; includes approved schools not yet open)",
+  "finder": "418 campuses (NYC Charter School Center FINDER, pulled 2026-10-17)",
+  "success_academy_site": "59 campuses (successacademies.org, pulled 2026-10-17)"
+ },
+ "licenses": {
+  "matched": 205,
+  "seed_not_in_nysed": [
+   {
+    "id": "84K355",
+    "name": "Williamsburg Collegiate Charter School",
+    "closest_nysed": "Williamsburg Charter High School",
+    "score": 0.7
+   },
+   {
+    "id": "84K357",
+    "name": "KIPP AMP Charter School",
+    "closest_nysed": "KIPP Academy Charter School",
+    "score": 0.667
+   },
+   {
+    "id": "84K359",
+    "name": "The Uft Charter School",
+    "closest_nysed": "Summit Academy Charter School",
+    "score": 0.444
+   },
+   {
+    "id": "84K362",
+    "name": "Hellenic Classical Charter School",
+    "closest_nysed": "Hellenic Classical Charter School Park Slope",
+    "score": 0.766
+   },
+   {
+    "id": "84K395",
+    "name": "New Visions A.I.M. Charter High School I",
+    "closest_nysed": "Innovation Charter High School",
+    "score": 0.545
+   },
+   {
+    "id": "84K417",
+    "name": "Urban Dove Charter School",
+    "closest_nysed": "Urban Dove Team Charter School",
+    "score": 0.8
+   },
+   {
+    "id": "84K517",
+    "name": "Leadership Prep Bedford Stuyvesant Uncommon Prep Charter School",
+    "closest_nysed": "Bedford Stuyvesant New Beginnings Charter School 2",
+    "score": 0.557
+   },
+   {
+    "id": "84K593",
+    "name": "Excellence Boys Charter School",
+    "closest_nysed": "Uncommon Excellence Boys Charter School NYC",
+    "score": 0.769
+   },
+   {
+    "id": "84K608",
+    "name": "Kings Collegiate Charter School",
+    "closest_nysed": "Kwenda Collegiate Girls Charter School",
+    "score": 0.667
+   },
+   {
+    "id": "84K648",
+    "name": "Bedford Stuyvesant Collegiate Charter School",
+    "closest_nysed": "Bedford Stuyvesant New Beginnings Charter School",
+    "score": 0.759
+   },
+   {
+    "id": "84K707",
+    "name": "Brooklyn Prospect Charter School",
+    "closest_nysed": "Brooklyn Prospect Charter School-CSD 13",
+    "score": 0.829
+   },
+   {
+    "id": "84K711",
+    "name": "Leadership Preparatory Brownsville Charter School",
+    "closest_nysed": "Girls Preparatory Charter School of the Bronx",
+    "score": 0.667
+   },
+   {
+    "id": "84K712",
+    "name": "Excellence Girls Charter School",
+    "closest_nysed": "Uncommon Excellence Girls Charter School NYC",
+    "score": 0.78
+   },
+   {
+    "id": "84K724",
+    "name": "Leadership Prep Canarsie Charter School",
+    "closest_nysed": "Hyde Leadership Charter School - Brooklyn",
+    "score": 0.542
+   },
+   {
+    "id": "84K738",
+    "name": "New Visions Charter High School for Advanced Math and Science",
+    "closest_nysed": "United Charter High School for Advanced Math and Science",
+    "score": 0.836
+   },
+   {
+    "id": "84K739",
+    "name": "New Visions Charter High School for the Humanities",
+    "closest_nysed": "United Charter High School for the Humanities",
+    "score": 0.756
+   },
+   {
+    "id": "84K752",
+    "name": "Success Academy Charter School - Fort Greene",
+    "closest_nysed": "Success Academy Charter School - Bergen Beach",
+    "score": 0.667
+   },
+   {
+    "id": "84K757",
+    "name": "Unity Prep Charter School",
+    "closest_nysed": "Equity Project Charter School (The)",
+    "score": 0.667
+   },
+   {
+    "id": "84K766",
+    "name": "The International Charter School of New York",
+    "closest_nysed": "Next Generation Charter School",
+    "score": 0.643
+   },
+   {
+    "id": "84K775",
+    "name": "Leadership Preparatory Ocean Hill Charter School",
+    "closest_nysed": "Girls Preparatory Charter School of the Bronx II",
+    "score": 0.621
+   },
+   {
+    "id": "84K777",
+    "name": "Ocean Hill Collegiate Charter School",
+    "closest_nysed": "Brownsville Collegiate  Charter School",
+    "score": 0.744
+   },
+   {
+    "id": "84K780",
+    "name": "Brooklyn East Collegiate Charter School",
+    "closest_nysed": "Brownsville Collegiate  Charter School",
+    "score": 0.696
+   },
+   {
+    "id": "84K803",
+    "name": "Brooklyn LAB Charter School",
+    "closest_nysed": "Brooklyn Charter School (The)",
+    "score": 0.8
+   },
+   {
+    "id": "84K879",
+    "name": "Brooklyn Prospect Charter School Downtown",
+    "closest_nysed": "Brooklyn Prospect Charter School-CSD 13",
+    "score": 0.76
+   },
+   {
+    "id": "84K912",
+    "name": "Key Collegiate Charter School",
+    "closest_nysed": "Early College Charter School",
+    "score": 0.741
+   },
+   {
+    "id": "84K933",
+    "name": "Lefferts Gardens Ascend Charter School",
+    "closest_nysed": "Canarsie Ascend Charter School",
+    "score": 0.526
+   },
+   {
+    "id": "84M186",
+    "name": "Harlem Hebrew Language Charter School",
+    "closest_nysed": "Hebrew Language Academy Charter School",
+    "score": 0.811
+   },
+   {
+    "id": "84M202",
+    "name": "Great Oaks Charter School",
+    "closest_nysed": "Great Oaks Kathleen Sherry Charter School",
+    "score": 0.556
+   },
+   {
+    "id": "84M341",
+    "name": "Harlem Children's Zone Promise Academy II Charter School",
+    "closest_nysed": "Harlem Children's Zone Promise Academy II Charter School",
+    "score": 1.0
+   },
+   {
+    "id": "84M350",
+    "name": "Democracy Prep Charter School",
+    "closest_nysed": "Democracy Prep Harlem Charter School",
+    "score": 0.8
+   },
+   {
+    "id": "84M357",
+    "name": "Success Academy Charter School - Harlem 6",
+    "closest_nysed": "Success Academy Charter School-Harlem 1",
+    "score": 0.938
+   },
+   {
+    "id": "84M382",
+    "name": "DREAM Charter School",
+    "closest_nysed": "American Dream Charter School",
+    "score": 0.526
+   },
+   {
+    "id": "84M433",
+    "name": "Renaissance Charter High School for Innovation",
+    "closest_nysed": "Renaissance Charter School 2 (The)",
+    "score": 0.6
+   },
+   {
+    "id": "84M522",
+    "name": "Broome Street Academy Charter School",
+    "closest_nysed": "Broome Street Academy Charter High School",
+    "score": 0.839
+   },
+   {
+    "id": "84M705",
+    "name": "Amber Charter School",
+    "closest_nysed": "New American Academy Charter School (The)",
+    "score": 0.615
+   },
+   {
+    "id": "84M709",
+    "name": "Harlem Village Academy West Charter School",
+    "closest_nysed": "Harlem Village Academy West Charter School",
+    "score": 1.0
+   },
+   {
+    "id": "84Q298",
+    "name": "Middle Village Prep Charter School",
+    "closest_nysed": "Middle Village Preparatory Charter School",
+    "score": 0.844
+   },
+   {
+    "id": "84Q320",
+    "name": "New Visions Charter High School for Advanced Math and Science",
+    "closest_nysed": "United Charter High School for Advanced Math and Science",
+    "score": 0.836
+   },
+   {
+    "id": "84Q373",
+    "name": "New Visions Charter High School for the Humanities",
+    "closest_nysed": "United Charter High School for the Humanities",
+    "score": 0.756
+   },
+   {
+    "id": "84R070",
+    "name": "Lois and Richard Nicotra Early College Charter School",
+    "closest_nysed": "South Bronx Early College Academy Charter School",
+    "score": 0.61
+   },
+   {
+    "id": "84X200",
+    "name": "New Visions A.I.M. Charter High School II",
+    "closest_nysed": "New Dawn Charter High School II",
+    "score": 0.552
+   },
+   {
+    "id": "84X202",
+    "name": "New Visions Charter High School for Advanced Math and Science",
+    "closest_nysed": "United Charter High School for Advanced Math and Science",
+    "score": 0.836
+   },
+   {
+    "id": "84X208",
+    "name": "New Visions Charter High School for the Humanities",
+    "closest_nysed": "United Charter High School for the Humanities",
+    "score": 0.756
+   },
+   {
+    "id": "84X256",
+    "name": "Heketi Community Charter School",
+    "closest_nysed": "Elm Community Charter School",
+    "score": 0.759
+   },
+   {
+    "id": "84X345",
+    "name": "Hyde Leadership Charter School",
+    "closest_nysed": "St. Hope Leadership Academy Charter School",
+    "score": 0.788
+   },
+   {
+    "id": "84X387",
+    "name": "Brilla College Prep Charter School",
+    "closest_nysed": "Brilla College Preparatory Charter School",
+    "score": 0.844
+   },
+   {
+    "id": "84X389",
+    "name": "Bronx Global Learning Institute for Girls Charter School",
+    "closest_nysed": "Bronx Global Learning Institute for Girls Charter School, the Shirley Rodrguez-Remeneski School",
+    "score": 0.733
+   },
+   {
+    "id": "84X407",
+    "name": "Bronx Charter School for Children",
+    "closest_nysed": "Bronx Charter School for Excellence",
+    "score": 0.667
+   },
+   {
+    "id": "84X461",
+    "name": "Metropolitan Lighthouse Charter School",
+    "closest_nysed": "Brooklyn Rise Charter School",
+    "score": 0.5
+   },
+   {
+    "id": "84X539",
+    "name": "New Visions Charter High School for Advanced Math and Science",
+    "closest_nysed": "United Charter High School for Advanced Math and Science",
+    "score": 0.836
+   },
+   {
+    "id": "84X553",
+    "name": "New Visions Charter High School for the Humanities",
+    "closest_nysed": "United Charter High School for the Humanities",
+    "score": 0.756
+   },
+   {
+    "id": "84X554",
+    "name": "New York City Montessori Charter School",
+    "closest_nysed": "New American Academy Charter School (The)",
+    "score": 0.444
+   },
+   {
+    "id": "84X592",
+    "name": "Amber Charter School II",
+    "closest_nysed": "Amber Charter School Inwood",
+    "score": 0.632
+   },
+   {
+    "id": "84X609",
+    "name": "Zeta Charter Schools - Bronx 1",
+    "closest_nysed": "Zeta Charter School -South Bronx",
+    "score": 0.714
+   },
+   {
+    "id": "84X717",
+    "name": "Icahn Charter School",
+    "closest_nysed": "Icahn Charter School 1",
+    "score": 0.833
+   }
+  ],
+  "nysed_not_in_seed": [
+   {
+    "name": "Access Bronx Charter School",
+    "district": "NYC CSD 7",
+    "opened": 2004,
+    "authorizer": "Regents",
+    "sed_code": 320700860852
+   },
+   {
+    "name": "Achievement First Charter School 11",
+    "district": "NYC CSD 16",
+    "opened": 2025,
+    "authorizer": "SUNY",
+    "sed_code": 331600861085
+   },
+   {
+    "name": "Achievement First Legacy Charter School",
+    "district": "NYC CSD 16",
+    "opened": 2021,
+    "authorizer": "SUNY",
+    "sed_code": 331600861082
+   },
+   {
+    "name": "Amber Charter School East Harlem",
+    "district": "NYC CSD 4",
+    "opened": 2002,
+    "authorizer": "SUNY",
+    "sed_code": 310400860806
+   },
+   {
+    "name": "Amber Charter School Inwood",
+    "district": "NYC CSD 6",
+    "opened": 2021,
+    "authorizer": "SUNY",
+    "sed_code": 310600861176
+   },
+   {
+    "name": "Amber Charter School Kingsbridge",
+    "district": "NYC CSD 10",
+    "opened": 2016,
+    "authorizer": "SUNY",
+    "sed_code": 321000861074
+   },
+   {
+    "name": "American Dream Charter School II",
+    "district": "NYC CSD 6",
+    "opened": 2025,
+    "authorizer": "Regents",
+    "sed_code": 310600861157
+   },
+   {
+    "name": "Bedford Stuyvesant New Beginnings Charter School 2",
+    "district": "NYC CSD 16",
+    "opened": 2024,
+    "authorizer": "SUNY",
+    "sed_code": 331600861197
+   },
+   {
+    "name": "Brilla Caritas Charter School",
+    "district": "NYC CSD 10",
+    "opened": 2020,
+    "authorizer": "SUNY",
+    "sed_code": 321000861160
+   },
+   {
+    "name": "Brilla College Preparatory Charter School",
+    "district": "NYC CSD 7",
+    "opened": 2013,
+    "authorizer": "SUNY",
+    "sed_code": 320700861014
+   },
+   {
+    "name": "Brilla Pax Charter School",
+    "district": "NYC CSD 10",
+    "opened": 2020,
+    "authorizer": "SUNY",
+    "sed_code": 321000861161
+   },
+   {
+    "name": "Bronx Global Learning Institute for Girls Charter School, the Shirley Rodrguez-Remeneski School",
+    "district": "NYC CSD 7",
+    "opened": 2008,
+    "authorizer": "NYCDOE",
+    "sed_code": 320700860915
+   },
+   {
+    "name": "Brooklyn Ascend Charter School 6",
+    "district": "NYC CSD 18",
+    "opened": 2024,
+    "authorizer": "SUNY",
+    "sed_code": 331800861177
+   },
+   {
+    "name": "Brooklyn Laboratory Charter School",
+    "district": "NYC CSD 13",
+    "opened": 2014,
+    "authorizer": "Regents",
+    "sed_code": 331300861063
+   },
+   {
+    "name": "Brooklyn Prospect Charter School - CSD 13.2",
+    "district": "NYC CSD 13",
+    "opened": 2015,
+    "authorizer": "SUNY",
+    "sed_code": 331300861079
+   },
+   {
+    "name": "Brooklyn Prospect Charter School-CSD 13",
+    "district": "NYC CSD 13",
+    "opened": 2016,
+    "authorizer": "SUNY",
+    "sed_code": 331300861077
+   },
+   {
+    "name": "Brooklyn Prospect Charter School-CSD 15",
+    "district": "NYC CSD 18",
+    "opened": 2009,
+    "authorizer": "SUNY",
+    "sed_code": 331800860935
+   },
+   {
+    "name": "Broome Street Academy Charter High School",
+    "district": "NYC CSD 2",
+    "opened": 2011,
+    "authorizer": "SUNY",
+    "sed_code": 310200860992
+   },
+   {
+    "name": "Capital Preparatory Bronx Charter School",
+    "district": "NYC CSD 11",
+    "opened": 2020,
+    "authorizer": "SUNY",
+    "sed_code": 321100861163
+   },
+   {
+    "name": "Central Queens Academy Charter School II",
+    "district": "NYC CSD 24",
+    "opened": 2024,
+    "authorizer": "SUNY",
+    "sed_code": 342400861198
+   },
+   {
+    "name": "Democracy Preparatory Charter School",
+    "district": "NYC CSD 5",
+    "opened": 2006,
+    "authorizer": "SUNY",
+    "sed_code": 310500860894
+   },
+   {
+    "name": "Dream Charter School East Harlem",
+    "district": "NYC CSD 4",
+    "opened": 2008,
+    "authorizer": "SUNY",
+    "sed_code": 310400860919
+   },
+   {
+    "name": "Dream Charter School Highbridge",
+    "district": "NYC CSD 9",
+    "opened": 2022,
+    "authorizer": "SUNY",
+    "sed_code": 320900861166
+   },
+   {
+    "name": "Earl Monroe New Renaissance Basketball Academy Charter School",
+    "district": "NYC CSD 7",
+    "opened": 2021,
+    "authorizer": "SUNY",
+    "sed_code": 320700861169
+   },
+   {
+    "name": "Early College Charter School",
+    "district": "NYC CSD 31",
+    "opened": 2018,
+    "authorizer": "Regents",
+    "sed_code": 353100861136
+   },
+   {
+    "name": "Explore Enrich Charter School",
+    "district": "NYC CSD 17",
+    "opened": 2025,
+    "authorizer": "SUNY",
+    "sed_code": 331700861047
+   },
+   {
+    "name": "Family Life Academy Charter Schools High School",
+    "district": "NYC CSD 9",
+    "opened": 2022,
+    "authorizer": "SUNY",
+    "sed_code": 320900861178
+   },
+   {
+    "name": "Flatbush Ascend Charter School",
+    "district": "NYC CSD 17",
+    "opened": 2019,
+    "authorizer": "SUNY",
+    "sed_code": 331700861164
+   },
+   {
+    "name": "Girls Preparatory Charter School of the Bronx II",
+    "district": "NYC CSD 10",
+    "opened": 2020,
+    "authorizer": "SUNY",
+    "sed_code": 321000861179
+   },
+   {
+    "name": "Great Oaks Kathleen Sherry Charter School",
+    "district": "NYC CSD 2",
+    "opened": 2013,
+    "authorizer": "Regents",
+    "sed_code": 310200861055
+   },
+   {
+    "name": "Harlem Children's Zone Promise Academy Charter School",
+    "district": "NYC CSD 5",
+    "opened": 2004,
+    "authorizer": "NYCDOE",
+    "sed_code": 310500860864
+   },
+   {
+    "name": "Harlem Village Academy North Charter School",
+    "district": "NYC CSD 5",
+    "opened": 2003,
+    "authorizer": "SUNY",
+    "sed_code": 310500860848
+   },
+   {
+    "name": "Haven Charter High School",
+    "district": "NYC CSD 11",
+    "opened": 2025,
+    "authorizer": "SUNY",
+    "sed_code": 321100861200
+   },
+   {
+    "name": "Hellenic Classical Charter School Park Slope",
+    "district": "NYC CSD 15",
+    "opened": 2005,
+    "authorizer": "Regents",
+    "sed_code": 331500860878
+   },
+   {
+    "name": "Icahn Charter School 1",
+    "district": "NYC CSD 9",
+    "opened": 2001,
+    "authorizer": "SUNY",
+    "sed_code": 320900860835
+   },
+   {
+    "name": "Innovation Charter High School",
+    "district": "NYC CSD 4",
+    "opened": 2010,
+    "authorizer": "NYCDOE",
+    "sed_code": 310400860968
+   },
+   {
+    "name": "KIPP Always Mentally Prepared Charter School",
+    "district": "NYC CSD 17",
+    "opened": 2005,
+    "authorizer": "SUNY",
+    "sed_code": 331700860882
+   },
+   {
+    "name": "KIPP Beyond Charter School",
+    "district": "NYC CSD 3",
+    "opened": 2021,
+    "authorizer": "SUNY",
+    "sed_code": 310300861180
+   },
+   {
+    "name": "Kwenda Collegiate Girls Charter School",
+    "district": "NYC CSD 22",
+    "opened": 2025,
+    "authorizer": "SUNY",
+    "sed_code": 332200861199
+   },
+   {
+    "name": "Lamad Academy Charter School",
+    "district": "NYC CSD 18",
+    "opened": 2020,
+    "authorizer": "SUNY",
+    "sed_code": 331800861168
+   },
+   {
+    "name": "Lamad Averne Academy Charter School",
+    "district": "NYC CSD 7",
+    "opened": 2025,
+    "authorizer": "SUNY",
+    "sed_code": 320700861202
+   },
+   {
+    "name": "Leaders  in Our Neighborhood Charter School",
+    "district": "NYC CSD 8",
+    "opened": 2006,
+    "authorizer": "SUNY",
+    "sed_code": 320800860903
+   },
+   {
+    "name": "Math, Engineering, and Science Academy Charter High School 2",
+    "district": "NYC CSD 20",
+    "opened": 2025,
+    "authorizer": "SUNY",
+    "sed_code": 332000861201
+   },
+   {
+    "name": "Middle Village Preparatory Charter School",
+    "district": "NYC CSD 24",
+    "opened": 2013,
+    "authorizer": "SUNY",
+    "sed_code": 342400861048
+   },
+   {
+    "name": "Next Generation Charter School",
+    "district": "NYC CSD 12",
+    "opened": 2026,
+    "authorizer": "SUNY",
+    "sed_code": 321200861203
+   },
+   {
+    "name": "Nuasin Next Generation Charter School",
+    "district": "NYC CSD 9",
+    "opened": 2010,
+    "authorizer": "SUNY",
+    "sed_code": 320900860962
+   },
+   {
+    "name": "Our World Neighborhood Charter School 3",
+    "district": "NYC CSD 24",
+    "opened": 2022,
+    "authorizer": "SUNY",
+    "sed_code": 342400861170
+   },
+   {
+    "name": "Renaissance Charter School 2 (The)",
+    "district": "NYC CSD 24",
+    "opened": 2020,
+    "authorizer": "Regents",
+    "sed_code": 342400861128
+   },
+   {
+    "name": "Richmond Preparatory Charter School",
+    "district": "NYC CSD 31",
+    "opened": 2021,
+    "authorizer": "Regents",
+    "sed_code": 353100861148
+   },
+   {
+    "name": "South Bronx Classical Charter School V",
+    "district": "NYC CSD 8",
+    "opened": 2025,
+    "authorizer": "SUNY",
+    "sed_code": 320800861204
+   },
+   {
+    "name": "South Bronx Classical Charter School VI",
+    "district": "NYC CSD 11",
+    "opened": 2025,
+    "authorizer": "Regents",
+    "sed_code": 321100861138
+   },
+   {
+    "name": "Staten Island Hebrew Public Charter School",
+    "district": "NYC CSD 31",
+    "opened": 2022,
+    "authorizer": "Regents",
+    "sed_code": 353100861159
+   },
+   {
+    "name": "Success Academy Charter School - Norwood",
+    "district": "NYC CSD 10",
+    "opened": 2017,
+    "authorizer": "SUNY",
+    "sed_code": 321000861088
+   },
+   {
+    "name": "Success Academy Charter School \u2013 NYC 15",
+    "district": "NYC CSD 17",
+    "opened": 2025,
+    "authorizer": "SUNY",
+    "sed_code": 331700861038
+   },
+   {
+    "name": "Success Academy Charter School - NYC 17",
+    "district": "NYC CSD 10",
+    "opened": 2026,
+    "authorizer": "SUNY",
+    "sed_code": 321000861205
+   },
+   {
+    "name": "Success Academy Charter School - NYC 18",
+    "district": "NYC CSD 10",
+    "opened": 2026,
+    "authorizer": "SUNY",
+    "sed_code": 321000861206
+   },
+   {
+    "name": "Success Academy Charter School - Sheepshead Bay",
+    "district": "NYC CSD 22",
+    "opened": 2013,
+    "authorizer": "SUNY",
+    "sed_code": 332200861039
+   },
+   {
+    "name": "Success Academy Charter School-Bronx 5 Lower",
+    "district": "NYC CSD 7",
+    "opened": 2022,
+    "authorizer": "SUNY",
+    "sed_code": 320700861089
+   },
+   {
+    "name": "Success Academy Charter School-Bronx 5 Upper",
+    "district": "NYC CSD 7",
+    "opened": 2022,
+    "authorizer": "SUNY",
+    "sed_code": 320700861097
+   },
+   {
+    "name": "Success Academy Charter School-NYC 12",
+    "district": "NYC CSD 8",
+    "opened": 2024,
+    "authorizer": "SUNY",
+    "sed_code": 320800861098
+   },
+   {
+    "name": "Success Academy Charter School-NYC 14",
+    "district": "NYC CSD 27",
+    "opened": 2024,
+    "authorizer": "SUNY",
+    "sed_code": 342700861100
+   },
+   {
+    "name": "Success Academy Charter School-NYC 5",
+    "district": "NYC CSD 11",
+    "opened": 2024,
+    "authorizer": "SUNY",
+    "sed_code": 321100861091
+   },
+   {
+    "name": "Success Academy Charter School-NYC 6",
+    "district": "NYC CSD 11",
+    "opened": 2024,
+    "authorizer": "SUNY",
+    "sed_code": 321100861092
+   },
+   {
+    "name": "Success Academy Charter School-NYC 7",
+    "district": "NYC CSD 10",
+    "opened": 2024,
+    "authorizer": "SUNY",
+    "sed_code": 321000861093
+   },
+   {
+    "name": "Uncommon Bed-Stuy East Charter School NYC",
+    "district": "NYC CSD 16",
+    "opened": 2008,
+    "authorizer": "SUNY",
+    "sed_code": 331600860918
+   },
+   {
+    "name": "Uncommon Bed-Stuy West Charter School NYC",
+    "district": "NYC CSD 13",
+    "opened": 2006,
+    "authorizer": "SUNY",
+    "sed_code": 331300860901
+   },
+   {
+    "name": "Uncommon Brownsville North Charter School NYC",
+    "district": "NYC CSD 23",
+    "opened": 2010,
+    "authorizer": "SUNY",
+    "sed_code": 332300860941
+   },
+   {
+    "name": "Uncommon Brownsville South Charter School NYC",
+    "district": "NYC CSD 23",
+    "opened": 2009,
+    "authorizer": "SUNY",
+    "sed_code": 332300860942
+   },
+   {
+    "name": "Uncommon Canarsie Charter School NYC",
+    "district": "NYC CSD 18",
+    "opened": 2013,
+    "authorizer": "SUNY",
+    "sed_code": 331800860943
+   },
+   {
+    "name": "Uncommon Crown Heights Charter School NYC",
+    "district": "NYC CSD 23",
+    "opened": 2010,
+    "authorizer": "SUNY",
+    "sed_code": 332300860936
+   },
+   {
+    "name": "Uncommon Excellence Boys Charter School NYC",
+    "district": "NYC CSD 16",
+    "opened": 2004,
+    "authorizer": "SUNY",
+    "sed_code": 331600860860
+   },
+   {
+    "name": "Uncommon Excellence Girls Charter School NYC",
+    "district": "NYC CSD 16",
+    "opened": 2009,
+    "authorizer": "SUNY",
+    "sed_code": 331600860938
+   },
+   {
+    "name": "Uncommon Kings Charter School NYC",
+    "district": "NYC CSD 18",
+    "opened": 2007,
+    "authorizer": "SUNY",
+    "sed_code": 331800860908
+   },
+   {
+    "name": "Uncommon New York City Charter School #1",
+    "district": "NYC CSD 13",
+    "opened": 2025,
+    "authorizer": "SUNY",
+    "sed_code": 331300861119
+   },
+   {
+    "name": "Uncommon Williamsburg Charter School NYC",
+    "district": "NYC CSD 14",
+    "opened": 2005,
+    "authorizer": "SUNY",
+    "sed_code": 331400860885
+   },
+   {
+    "name": "United Charter High School for Advanced Math and Science",
+    "district": "NYC CSD 10",
+    "opened": 2011,
+    "authorizer": "SUNY",
+    "sed_code": 321000860999
+   },
+   {
+    "name": "United Charter High School for Advanced Math and Science II",
+    "district": "NYC CSD 8",
+    "opened": 2012,
+    "authorizer": "Regents",
+    "sed_code": 320800861017
+   },
+   {
+    "name": "United Charter High School for Advanced Math and Science III",
+    "district": "NYC CSD 22",
+    "opened": 2013,
+    "authorizer": "Regents",
+    "sed_code": 332200861053
+   },
+   {
+    "name": "United Charter High School for Advanced Math and Science IV",
+    "district": "NYC CSD 27",
+    "opened": 2015,
+    "authorizer": "Regents",
+    "sed_code": 342700861054
+   },
+   {
+    "name": "United Charter High School for the Humanities",
+    "district": "NYC CSD 10",
+    "opened": 2011,
+    "authorizer": "SUNY",
+    "sed_code": 321000860704
+   },
+   {
+    "name": "United Charter High School for the Humanities II",
+    "district": "NYC CSD 8",
+    "opened": 2012,
+    "authorizer": "Regents",
+    "sed_code": 320800861018
+   },
+   {
+    "name": "United Charter High School for the Humanities IV",
+    "district": "NYC CSD 27",
+    "opened": 2017,
+    "authorizer": "Regents",
+    "sed_code": 342700861052
+   },
+   {
+    "name": "Unity Preparatory Charter School of Brooklyn",
+    "district": "NYC CSD 13",
+    "opened": 2013,
+    "authorizer": "Regents",
+    "sed_code": 331300861056
+   },
+   {
+    "name": "Urban Dove Team Charter School",
+    "district": "NYC CSD 22",
+    "opened": 2012,
+    "authorizer": "Regents",
+    "sed_code": 332200861006
+   },
+   {
+    "name": "Urban Dove Team Charter School III",
+    "district": "NYC CSD 30",
+    "opened": 2012,
+    "authorizer": "SUNY",
+    "sed_code": 343000861010
+   },
+   {
+    "name": "Urban Dove Team Charter School IV",
+    "district": "NYC CSD 4",
+    "opened": 2012,
+    "authorizer": "SUNY",
+    "sed_code": 310400861007
+   },
+   {
+    "name": "Urban Dove Team Charter School V",
+    "district": "NYC CSD 13",
+    "opened": 2025,
+    "authorizer": "SUNY",
+    "sed_code": 331300861210
+   },
+   {
+    "name": "Wildflower New York Charter School",
+    "district": "NYC CSD 9",
+    "opened": 2020,
+    "authorizer": "SUNY",
+    "sed_code": 320900861174
+   },
+   {
+    "name": "Zeta Charter School -  Bronx Tremont Park",
+    "district": "NYC CSD 12",
+    "opened": 2020,
+    "authorizer": "SUNY",
+    "sed_code": 321200861182
+   },
+   {
+    "name": "Zeta Charter School - Bronx  Mount Eden",
+    "district": "NYC CSD 9",
+    "opened": 2020,
+    "authorizer": "SUNY",
+    "sed_code": 320900861181
+   },
+   {
+    "name": "Zeta Charter School - Queens 2",
+    "district": "NYC CSD 24",
+    "opened": 2025,
+    "authorizer": "SUNY",
+    "sed_code": 342400861208
+   },
+   {
+    "name": "Zeta Charter School - Queens Elmhurst",
+    "district": "NYC CSD 24",
+    "opened": 2025,
+    "authorizer": "SUNY",
+    "sed_code": 342400861207
+   },
+   {
+    "name": "Zeta Charter School - Queens Jamaica",
+    "district": "NYC CSD 24",
+    "opened": 2025,
+    "authorizer": "SUNY",
+    "sed_code": 342400861209
+   },
+   {
+    "name": "Zeta Charter School -South Bronx",
+    "district": "NYC CSD 7",
+    "opened": 2018,
+    "authorizer": "SUNY",
+    "sed_code": 320700861141
+   }
+  ]
+ },
+ "campuses": {
+  "finder_matched_to_seed": 418,
+  "finder_not_matched": [],
+  "seed_without_finder_campus": [
+   {
+    "id": "84K125",
+    "name": "Success Academy Charter School - Bed-Stuy 2",
+    "address": "211 Throop Avenue"
+   },
+   {
+    "id": "84K333",
+    "name": "Explore Exceed Charter School",
+    "address": "443 St Marks Avenue"
+   },
+   {
+    "id": "84K355",
+    "name": "Williamsburg Collegiate Charter School",
+    "address": "157 Wilson Street"
+   },
+   {
+    "id": "84K359",
+    "name": "The Uft Charter School",
+    "address": "800 Van Siclen Ave"
+   },
+   {
+    "id": "84K395",
+    "name": "New Visions A.I.M. Charter High School I",
+    "address": "1150 East New York Avenue"
+   },
+   {
+    "id": "84K417",
+    "name": "Urban Dove Charter School",
+    "address": "600 Lafayette Avenue"
+   },
+   {
+    "id": "84K517",
+    "name": "Leadership Prep Bedford Stuyvesant Uncommon Prep Charter School",
+    "address": "141 Macon Street"
+   },
+   {
+    "id": "84K593",
+    "name": "Excellence Boys Charter School",
+    "address": "239 Patchen Avenue"
+   },
+   {
+    "id": "84K608",
+    "name": "Kings Collegiate Charter School",
+    "address": "1084 Lenox Road"
+   },
+   {
+    "id": "84K648",
+    "name": "Bedford Stuyvesant Collegiate Charter School",
+    "address": "800 Gates Avenue"
+   },
+   {
+    "id": "84K710",
+    "name": "Brownsville Collegiate Charter School",
+    "address": "364 Sackman Street"
+   },
+   {
+    "id": "84K711",
+    "name": "Leadership Preparatory Brownsville Charter School",
+    "address": "985 Rockaway Avenue"
+   },
+   {
+    "id": "84K712",
+    "name": "Excellence Girls Charter School",
+    "address": "794 Monroe Street"
+   },
+   {
+    "id": "84K724",
+    "name": "Leadership Prep Canarsie Charter School",
+    "address": "1070 East 104 Street"
+   },
+   {
+    "id": "84K738",
+    "name": "New Visions Charter High School for Advanced Math and Science",
+    "address": "3000 Avenue X"
+   },
+   {
+    "id": "84K739",
+    "name": "New Visions Charter High School for the Humanities",
+    "address": "3000 Avenue X"
+   },
+   {
+    "id": "84K744",
+    "name": "Coney Island Preparatory Public Charter School",
+    "address": "501 West Avenue"
+   },
+   {
+    "id": "84K752",
+    "name": "Success Academy Charter School - Fort Greene",
+    "address": "101 Park Avenue"
+   },
+   {
+    "id": "84K766",
+    "name": "The International Charter School of New York",
+    "address": "55 Willoughby Street"
+   },
+   {
+    "id": "84K775",
+    "name": "Leadership Preparatory Ocean Hill Charter School",
+    "address": "51 Christopher Avenue"
+   },
+   {
+    "id": "84K780",
+    "name": "Brooklyn East Collegiate Charter School",
+    "address": "832 Marcy Avenue"
+   },
+   {
+    "id": "84K807",
+    "name": "Collegiate Academy for Mathematics and Personal Awareness Charter School",
+    "address": "1962-84 Linden Blvd."
+   },
+   {
+    "id": "84K912",
+    "name": "Key Collegiate Charter School",
+    "address": "250 Blake Avenue"
+   },
+   {
+    "id": "84K928",
+    "name": "Brooklyn Prospect Charter School 15.2",
+    "address": "3002 Fort Hamilton Parkway"
+   },
+   {
+    "id": "84K933",
+    "name": "Lefferts Gardens Ascend Charter School",
+    "address": "870 Albany Avenue"
+   },
+   {
+    "id": "84M080",
+    "name": "Manhattan Charter School II",
+    "address": "220 Henry Street"
+   },
+   {
+    "id": "84M186",
+    "name": "Harlem Hebrew Language Charter School",
+    "address": "147 Saint Nicholas Avenue"
+   },
+   {
+    "id": "84M330",
+    "name": "Girls Preparatory Charter School of New York",
+    "address": "442 East Houston Street"
+   },
+   {
+    "id": "84M357",
+    "name": "Success Academy Charter School - Harlem 6",
+    "address": "461 West 131 Street"
+   },
+   {
+    "id": "84M433",
+    "name": "Renaissance Charter High School for Innovation",
+    "address": "410 East 100 Street"
+   },
+   {
+    "id": "84M704",
+    "name": "Harbor Science and Arts Charter School",
+    "address": "132 East 111 Street"
+   },
+   {
+    "id": "84M707",
+    "name": "John V. Lindsay Wildcat Academy Charter School",
+    "address": "17 Battery Place"
+   },
+   {
+    "id": "84M726",
+    "name": "KIPP STAR College Prep Charter School",
+    "address": "433 West 123 Street"
+   },
+   {
+    "id": "84Q320",
+    "name": "New Visions Charter High School for Advanced Math and Science",
+    "address": "156-10 Baisley Boulevard"
+   },
+   {
+    "id": "84Q373",
+    "name": "New Visions Charter High School for the Humanities",
+    "address": "100-00 Beach Channel Drive"
+   },
+   {
+    "id": "84Q386",
+    "name": "Our World Neighborhood Charter School 2",
+    "address": "135-25 79 Street"
+   },
+   {
+    "id": "84Q706",
+    "name": "Our World Neighborhood Charter School",
+    "address": "36-12 35 Avenue"
+   },
+   {
+    "id": "84R070",
+    "name": "Lois and Richard Nicotra Early College Charter School",
+    "address": "300 Genesee Avenue"
+   },
+   {
+    "id": "84X200",
+    "name": "New Visions A.I.M. Charter High School II",
+    "address": "1010 Rev. J. A. Polite Avenue"
+   },
+   {
+    "id": "84X202",
+    "name": "New Visions Charter High School for Advanced Math and Science",
+    "address": "900 Tinton Avenue"
+   },
+   {
+    "id": "84X208",
+    "name": "New Visions Charter High School for the Humanities",
+    "address": "455 Southern Blvd"
+   },
+   {
+    "id": "84X256",
+    "name": "Heketi Community Charter School",
+    "address": "403 Concord Avenue"
+   },
+   {
+    "id": "84X345",
+    "name": "Hyde Leadership Charter School",
+    "address": "730 Bryant Avenue"
+   },
+   {
+    "id": "84X407",
+    "name": "Bronx Charter School for Children",
+    "address": "388 Willis Avenue"
+   },
+   {
+    "id": "84X461",
+    "name": "Metropolitan Lighthouse Charter School",
+    "address": "180 West 165th Street"
+   },
+   {
+    "id": "84X465",
+    "name": "Boys Preparatory Charter School of New York",
+    "address": "192 East 151st Street"
+   },
+   {
+    "id": "84X539",
+    "name": "New Visions Charter High School for Advanced Math and Science",
+    "address": "99 Terrace View Avenue"
+   },
+   {
+    "id": "84X553",
+    "name": "New Visions Charter High School for the Humanities",
+    "address": "99 Terrace View Avenue"
+   },
+   {
+    "id": "84X554",
+    "name": "New York City Montessori Charter School",
+    "address": "423 East 138th Street"
+   },
+   {
+    "id": "84X592",
+    "name": "Amber Charter School II",
+    "address": "3120 Corlear Avenue"
+   },
+   {
+    "id": "84X609",
+    "name": "Zeta Charter Schools - Bronx 1",
+    "address": "222 Alexander Avenue"
+   },
+   {
+    "id": "84X611",
+    "name": "AECI II: NYC Charter High School for Computer Engineering and Innovation",
+    "address": "423 East 138th Street"
+   },
+   {
+    "id": "84X616",
+    "name": "KIPP Bronx II Charter School",
+    "address": "2246 Jerome Avenue"
+   },
+   {
+    "id": "84X706",
+    "name": "Harriet Tubman Charter School",
+    "address": "3565 Third Avenue"
+   },
+   {
+    "id": "84X718",
+    "name": "Bronx Charter School for Better Learning",
+    "address": "3740 Baychester Avenue"
+   }
+  ],
+  "seed_far_from_every_campus": [
+   {
+    "id": "84K486",
+    "name": "New Dawn Charter High School",
+    "address": "760 Dekalb Avenue",
+    "nearest_m": 3865
+   },
+   {
+    "id": "84K733",
+    "name": "Math, Engineering, and Science Academy Charter High School",
+    "address": "231 Palmetto Street",
+    "nearest_m": 10527
+   },
+   {
+    "id": "84K777",
+    "name": "Ocean Hill Collegiate Charter School",
+    "address": "1137 Herkimer Street",
+    "nearest_m": 2367
+   },
+   {
+    "id": "84K785",
+    "name": "Imagine Me Leadership Charter School",
+    "address": "818 Schenck Avenue",
+    "nearest_m": 2918
+   },
+   {
+    "id": "84K876",
+    "name": "Achievement First Voyager Charter School",
+    "address": "601 Parkside Avenue",
+    "nearest_m": 5473
+   },
+   {
+    "id": "84K879",
+    "name": "Brooklyn Prospect Charter School Downtown",
+    "address": "1104 Fulton Street",
+    "nearest_m": 2670
+   },
+   {
+    "id": "84K883",
+    "name": "Success Academy Charter School - Bed Stuy 3",
+    "address": "787 Lafayette Avenue",
+    "nearest_m": 3462
+   },
+   {
+    "id": "84K895",
+    "name": "Hebrew Language Academy Charter School 2",
+    "address": "1870 Stillwell Avenue",
+    "nearest_m": 1092
+   },
+   {
+    "id": "84K929",
+    "name": "East Brooklyn Ascend Charter School",
+    "address": "396 Grant Avenue",
+    "nearest_m": 1304
+   },
+   {
+    "id": "84K937",
+    "name": "Brooklyn RISE Charter School",
+    "address": "473 53 Street",
+    "nearest_m": 5634
+   },
+   {
+    "id": "84M065",
+    "name": "Democracy Prep Endurance Charter School",
+    "address": "250 West 127 Street",
+    "nearest_m": 4898
+   },
+   {
+    "id": "84M168",
+    "name": "East Harlem Scholars Academy Charter School II",
+    "address": "1573 Madison Avenue",
+    "nearest_m": 644
+   },
+   {
+    "id": "84M202",
+    "name": "Great Oaks Charter School",
+    "address": "38 Delancey Street",
+    "nearest_m": 1537
+   },
+   {
+    "id": "84M204",
+    "name": "Capital Preparatory (CP) Harlem Charter School",
+    "address": "1 East 104 Street",
+    "nearest_m": 2032
+   },
+   {
+    "id": "84M373",
+    "name": "Zeta Charter Schools - Inwood 1",
+    "address": "652 West 187th Street",
+    "nearest_m": 1828
+   },
+   {
+    "id": "84M383",
+    "name": "Storefront Academy Harlem Charter School",
+    "address": "70 East 129 Street",
+    "nearest_m": 1436
+   },
+   {
+    "id": "84M702",
+    "name": "Sisulu-Walker Charter School of Harlem",
+    "address": "125 West 115 Street",
+    "nearest_m": 1599
+   },
+   {
+    "id": "84M709",
+    "name": "Harlem Village Academy West Charter School",
+    "address": "244 West 144 Street",
+    "nearest_m": 1652
+   },
+   {
+    "id": "84Q083",
+    "name": "Central Queens Academy Charter School",
+    "address": "55-30 Junction Boulevard",
+    "nearest_m": 742
+   },
+   {
+    "id": "84Q380",
+    "name": "Forte Preparatory Academy Charter School",
+    "address": "32-20 108th Street",
+    "nearest_m": 2797
+   },
+   {
+    "id": "84Q385",
+    "name": "Elm Community Charter School",
+    "address": "149-34 35 Avenue",
+    "nearest_m": 6591
+   },
+   {
+    "id": "84Q387",
+    "name": "Valence College Preparatory Charter School",
+    "address": "75-01 31 Avenue",
+    "nearest_m": 4357
+   },
+   {
+    "id": "84Q704",
+    "name": "Merrick Academy - Queens Public Charter School",
+    "address": "136-25 218 Street",
+    "nearest_m": 483
+   },
+   {
+    "id": "84R012",
+    "name": "New Ventures Charter School",
+    "address": "1 Teleport Drive",
+    "nearest_m": 2119
+   },
+   {
+    "id": "84X486",
+    "name": "Rosalyn Yalow Charter School",
+    "address": "116-118 East 169 Street",
+    "nearest_m": 1923
+   },
+   {
+    "id": "84X581",
+    "name": "South Bronx Community Charter School",
+    "address": "730 Concourse Village West",
+    "nearest_m": 1448
+   },
+   {
+    "id": "84X588",
+    "name": "South Bronx Classical Charter School IV",
+    "address": "3458 Third Avenue",
+    "nearest_m": 1557
+   },
+   {
+    "id": "84X597",
+    "name": "Urban Assembly Charter School for Computer Science",
+    "address": "1300 Boynton Avenue",
+    "nearest_m": 3534
+   },
+   {
+    "id": "84X608",
+    "name": "Bronx Charter School for Excellence 4",
+    "address": "3956 Carpenter Avenue",
+    "nearest_m": 1705
+   },
+   {
+    "id": "84X610",
+    "name": "Urban Dove Team Charter School II",
+    "address": "860 Forest Avenue",
+    "nearest_m": 585
+   },
+   {
+    "id": "84X612",
+    "name": "Creo College Preparatory Charter School",
+    "address": "650 Grand Concourse",
+    "nearest_m": 638
+   },
+   {
+    "id": "84X613",
+    "name": "Bold Charter School",
+    "address": "1090 Close Avenue",
+    "nearest_m": 868
+   },
+   {
+    "id": "84X614",
+    "name": "DREAM Mott Haven Charter School",
+    "address": "250 East 156 Street",
+    "nearest_m": 1850
+   },
+   {
+    "id": "84X617",
+    "name": "KIPP Bronx III Charter School",
+    "address": "2246 Jerome Avenue",
+    "nearest_m": 4972
+   }
+  ],
+  "campuses_per_seed_school": {
+   "2": 58,
+   "101": 1,
+   "3": 16,
+   "1": 124,
+   "4": 4,
+   "8": 1,
+   "5": 1
+  }
+ },
+ "success_academy": {
+  "seed_licenses": 31,
+  "nysed_licenses": 41,
+  "finder_campuses": 55,
+  "network_site_campuses": 59,
+  "site_campuses_not_in_finder": [
+   "Bed-Stuy Elementary School",
+   "Bed-Stuy Middle School",
+   "Prospect Heights Elementary School",
+   "Astor Place Middle School",
+   "Hamilton Heights Middle School",
+   "Midtown West Middle School",
+   "Howard Beach Middle School",
+   "Laurelton Middle School",
+   "Queens Village Elementary School",
+   "Queens Village Middle School",
+   "Ridgewood Elementary School",
+   "A Groundbreaking K-12 Campus."
+  ]
+ }
+}

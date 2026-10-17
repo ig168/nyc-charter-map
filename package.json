@@ -1,0 +1,33 @@
+{
+  "name": "nyc-charter-school-finder",
+  "version": "1.0.0",
+  "description": "Find, compare and shortlist NYC charter schools on an interactive map, with Google sign-in to save schools.",
+  "private": true,
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "NODE_ENV=production node server.js",
+    "dev": "DEV_LOGIN=true node --watch server.js",
+    "test": "node --test test/*.test.js",
+    "validate-seed": "node scripts/validate-seed.js",
+    "build-streets": "node scripts/build-streets.js",
+    "build-demo": "node scripts/build-web.js && node scripts/build-streets.js && node scripts/build-demo.js",
+    "build-seed": "python3 scripts/build-seed.py data/seed/raw data/seed/schools.json",
+    "e2e": "node scripts/build-web.js && python3 eval/e2e.py",
+    "build": "node scripts/build-web.js",
+    "dev:web": "node scripts/build-web.js --watch",
+    "typecheck": "tsc -p web"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "esbuild": "^0.28.2",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "typescript": "^6.0.3"
+  }
+}

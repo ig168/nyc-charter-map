@@ -1,0 +1,8 @@
+.env
+.git
+node_modules
+eval
+test
+data/app.db*
+data/*.db*
+*.log

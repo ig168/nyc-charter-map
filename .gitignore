@@ -1,0 +1,13 @@
+node_modules
+.env
+data/*.db
+data/*.db-*
+eval/screens/
+eval/results.json
+*.log
+.DS_Store
+eval/screens*/
+eval/work/
+*.db
+*.db-*
+__pycache__/

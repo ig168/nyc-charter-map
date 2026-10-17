@@ -1,0 +1,204 @@
+{
+ "campuses": 436,
+ "dropped_finder_listings": [
+  {
+   "name": "Success Academy Charter School - Harlem 4 (Hamilton Heights Middle School)",
+   "street": "461 West 131 Street",
+   "reason": "not on the Success Academy Charter Schools website at this address"
+  },
+  {
+   "name": "Uncommon Excellence Girls Middle School",
+   "street": "1600 PARK PLACE",
+   "reason": "not on the Uncommon Schools website at this address"
+  }
+ ],
+ "duplicates_collapsed": [],
+ "rejected": [
+  {
+   "name": "Achievement First Legacy Middle School",
+   "street": "115-30 221st Street",
+   "reason": "no source gives the grades served"
+  }
+ ],
+ "old_schools_carried": 180,
+ "by_network": [
+  [
+   "(independent)",
+   164
+  ],
+  [
+   "Success Academy Charter Schools",
+   59
+  ],
+  [
+   "Uncommon Schools",
+   25
+  ],
+  [
+   "Achievement First",
+   22
+  ],
+  [
+   "KIPP NYC",
+   19
+  ],
+  [
+   "Ascend Public Charter Schools",
+   17
+  ],
+  [
+   "Bronx Charter School for Excellence",
+   11
+  ],
+  [
+   "Zeta Charter Schools",
+   11
+  ],
+  [
+   "Icahn Charter Schools",
+   10
+  ],
+  [
+   "Classical Charter Schools",
+   8
+  ],
+  [
+   "Brilla Public Charter Schools",
+   7
+  ],
+  [
+   "United Charter High Schools (formerly New Visions)",
+   7
+  ],
+  [
+   "DREAM",
+   6
+  ],
+  [
+   "Democracy Prep Public Schools",
+   6
+  ],
+  [
+   "Brooklyn Prospect Charter Schools",
+   6
+  ],
+  [
+   "Family Life Academy Charter Schools",
+   5
+  ],
+  [
+   "Urban Dove",
+   5
+  ],
+  [
+   "Harlem Village Academies",
+   5
+  ],
+  [
+   "Amber Charter Schools",
+   4
+  ],
+  [
+   "Explore Schools",
+   4
+  ],
+  [
+   "Growing Up Green Charter Schools",
+   4
+  ],
+  [
+   "Public Prep",
+   3
+  ],
+  [
+   "Hebrew Public",
+   3
+  ],
+  [
+   "Harlem Children's Zone",
+   3
+  ],
+  [
+   "Inwood Academy",
+   3
+  ],
+  [
+   "Capital Preparatory Schools",
+   2
+  ],
+  [
+   "NYC Autism Charter Schools",
+   2
+  ],
+  [
+   "Storefront Academy Charter Schools",
+   2
+  ],
+  [
+   "Brooklyn LAB",
+   2
+  ],
+  [
+   "Hyde Leadership Charter Schools",
+   2
+  ],
+  [
+   "New Dawn Charter Schools",
+   2
+  ],
+  [
+   "East Harlem Scholars Academies",
+   2
+  ],
+  [
+   "Renaissance Charter Schools",
+   2
+  ],
+  [
+   "Mott Haven Academy",
+   1
+  ],
+  [
+   "Lamad Academy Charter Schools",
+   1
+  ],
+  [
+   "Great Oaks Charter Schools",
+   1
+  ]
+ ],
+ "flags": [
+  [
+   "address is not in the city geocoder (often a new building)",
+   3
+  ],
+  [
+   "listed zip 11226 differs from geocoded zip 11201",
+   2
+  ],
+  [
+   "listed zip 10454 differs from geocoded zip 10452",
+   1
+  ],
+  [
+   "listed zip 10003 differs from geocoded zip 11221",
+   1
+  ],
+  [
+   "listed zip 11372 differs from geocoded zip 11103",
+   1
+  ],
+  [
+   "FINDER pin was 218",
+   1
+  ],
+  [
+   "listed zip 11101 differs from geocoded zip 11106",
+   1
+  ],
+  [
+   "listed zip 10311 differs from geocoded zip 10314",
+   1
+  ]
+ ]
+}

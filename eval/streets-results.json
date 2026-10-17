@@ -1,0 +1,38 @@
+{
+  "STR-01": {
+    "status": "Pass",
+    "evidence": "All 436 school pins plus Far Rockaway and Tottenville edge spots have drawn street pixels within 150 m at zoom 16 (pins hidden, tile pixels sampled); 1 very large building(s) whose own street is drawn within 250 m: q-middle-village-preparatory-charter-school (172 m); 420 of 436 pins are within 60 m of a centerline (the rest are large campuses set back 60\u2013145 m). Every school's own address street is in the data near its pin (median 33 m, max 299 m). Embedded: 24,058 merged lines from 110,559 source segments, 10,053 names. Credit: \"Streets, parks & shoreline: NYC Open Data\"."
+  },
+  "STR-02": {
+    "status": "Pass",
+    "evidence": "Pixel checks on BQE (highway), 8th Ave (main) and W 44th St (local): highway yellow from zoom 10 (hidden at 9), main road white from 12 (hidden at 11), local street white from 14 (hidden at 13). Line widths at zoom 16: highway 8.0 px > main 7.0 px > local 4.0 px. Screenshots STR-02-z10/12/14/16."
+  },
+  "STR-03": {
+    "status": "Pass",
+    "evidence": "Midtown z15: 0 labels in 40 tiles; Bed-Stuy z15: 0 labels in 40 tiles; Bronx grid z15: 0 labels in 40 tiles; Midtown z16: 226 labels in 40 tiles; Bed-Stuy z16: 222 labels in 40 tiles; Bronx grid z16: 156 labels in 40 tiles; Midtown z18: 66 labels in 40 tiles; Bed-Stuy z18: 66 labels in 40 tiles; Bronx grid z18: 66 labels in 40 tiles. 0 labels at zoom 15; 0 labels crossing a tile edge; 0 overlapping label boxes. Names in title case with ordinals (W 42nd St, E 125th St, Broadway, 8th Ave \u2026); 0 of 10,053 names left all caps. Screenshots STR-03-*."
+  },
+  "STR-04": {
+    "status": "Pass",
+    "evidence": "Central Park z14: park; Prospect Park z14: park; Green-Wood Cemetery z15: cemetery; Upper Bay z13: water; Hudson off Battery Park z16: water; East River off Battery z16: water; Atlantic off Rockaway z14: water; Battery Park City land z16: landish; 0 of 5 open-water points near Battery Park have street pixels. Screenshots STR-04-*."
+  },
+  "STR-05": {
+    "status": "Pass",
+    "evidence": "3 schools \u00d7 2 languages: link is https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=<school lat>,<lng> (matches seed coordinates exactly), target=_blank rel=noopener noreferrer; label en: \"Street View\", es: \"Ver la calle\". Click opened a new tab and sent outbound_link_clicked {type: streetview}, accepted by the server (HTTP 204)."
+  },
+  "STR-06": {
+    "status": "Pass",
+    "evidence": "30 pans/zooms (zoom 12\u201318) across the city with every outside request blocked: 0 requests attempted besides the page and Leaflet (the one script the host loads from jsDelivr); demo page 2.83 MB (< 3 MB); 0 console errors."
+  },
+  "STR-07": {
+    "status": "Pass",
+    "evidence": "4\u00d7 CPU throttle, panning Midtown \u2192 Downtown Brooklyn: 301 tiles; average draw z14 4.2 ms, z16 4.9 ms, z18 3.3 ms (target < 50 ms at 16). One-time data prep 192 ms (unthrottled load). PERF-01 rerun: Pass (filter changes 104, 92, 77, 78 ms, all < 200 ms)."
+  },
+  "STR-09": {
+    "status": "Pass",
+    "evidence": "375\u00d7812, Map view, zoom 16 in Bed-Stuy: streets drawn with 52 street names; zoom, location, scale and List/Map switch boxes (the map-type switch is full-app only): 0 overlaps; no horizontal scroll. Screenshot STR-09-phone-z16.png."
+  },
+  "STR-08": {
+    "status": "Pass",
+    "evidence": "Full app: base layer = CARTO street tiles (21 tile requests), satellite switch present, embedded street layer not loaded. Unit tests 40/40 pass; full eval suite P0 37/37  P1 8/8 (45 of 45)."
+  }
+}

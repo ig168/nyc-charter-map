@@ -1,0 +1,14 @@
+{
+ "note": "Re-geocoded 2026-10-17 with a cleaner query after the first result failed the house-number/street check (scripts/geocode_check.py). null = the address is not in NYC Planning GeoSearch; the build falls back to the FINDER pin and flags it.",
+ "fixes": {
+  "F|urban-dove-team-charter-school-iii-6ac7bb9343632.html": {"lat": 40.761601, "lng": -73.919478, "label": "31-20 37 STREET, Astoria, NY, USA", "zip": "11103", "boro": "Queens", "csd": 30, "nta": "Astoria (Central)"},
+  "F|voice-charter-school-upper-elementary-campus-3-5-6ac7bba61174a.html": {"lat": 40.759892, "lng": -73.940406, "label": "36-49 11 STREET, Long Island City, NY, USA", "zip": "11106", "boro": "Queens", "csd": 30, "nta": "Queensbridge-Ravenswood-Dutch Kills"},
+  "F|whin-music-community-charter-school-6ac7bba57722b.html": {"lat": 40.83643, "lng": -73.941398, "label": "528 WEST 162 STREET, New York, NY, USA", "zip": "10032", "boro": "Manhattan", "csd": 6, "nta": "Washington Heights (South)"},
+  "F|bedford-stuyvesant-new-beginnings-charter-schools-high-school.html": null,
+  "F|elm-community-charter-school.html": null,
+  "F|success-academy-charter-school-bronx-3-e-150th-st.html": null,
+  "F|success-academy-charter-school-bronx-5-upper-e-150th-st.html": null,
+  "F|success-academy-charter-school-norwood.html": null,
+  "SA|k12campus": null
+ }
+}

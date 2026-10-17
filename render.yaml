@@ -1,0 +1,26 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# One-click deploy: Render dashboard → New → Blueprint → pick this repo.
+services:
+  - type: web
+    name: nyc-charter-school-finder
+    runtime: docker
+    # "free" is fine for a demo: it sleeps after ~15 min idle and saved schools reset on restart.
+    # For real use switch to "starter" and uncomment the disk below so the database persists.
+    plan: free
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "true"
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: GOOGLE_CLIENT_ID
+        sync: false # paste your OAuth client ID in the dashboard when prompted
+      - key: ALLOWED_EMAILS
+        sync: false # optional: comma-separated emails allowed to sign in (blank = anyone)
+    # disk:
+    #   name: data
+    #   mountPath: /app/data
+    #   sizeGB: 1

@@ -1,0 +1,618 @@
+{
+ "note": "Campus lists transcribed from each network's own website on 2026-10-17 (Success Academy is in success-academy-campuses.json, scraped page by page). Addresses are verified separately by geocoding.",
+ "networks": {
+  "KIPP NYC": {
+   "url": "https://www.kippnyc.org/schools/",
+   "claimed_total": "18 schools, 19 campuses",
+   "campuses": [
+    [
+     "KIPP AMP Elementary School",
+     "K-4",
+     "1224 Park Place",
+     "Brooklyn"
+    ],
+    [
+     "KIPP Academy Elementary School",
+     "K-4",
+     "730 Concourse Village West",
+     "Bronx"
+    ],
+    [
+     "KIPP Elements Primary School",
+     "K-4",
+     "1504 Macombs Road",
+     "Bronx"
+    ],
+    [
+     "KIPP Freedom Elementary School",
+     "K-4",
+     "2246 Jerome Avenue",
+     "Bronx"
+    ],
+    [
+     "KIPP Infinity Elementary School",
+     "K-4",
+     "625 West 133rd Street",
+     "Manhattan"
+    ],
+    [
+     "KIPP Inquire Elementary School",
+     "K-4",
+     "2720 Jerome Avenue",
+     "Bronx"
+    ],
+    [
+     "KIPP STAR Harlem College Prep Elementary School",
+     "K-4",
+     "625 West 133rd Street",
+     "Manhattan"
+    ],
+    [
+     "KIPP Washington Heights Elementary School",
+     "K-4",
+     "586 West 177th Street",
+     "Manhattan"
+    ],
+    [
+     "KIPP AMP Middle School",
+     "5-8",
+     "1224 Park Place",
+     "Brooklyn"
+    ],
+    [
+     "KIPP Academy Middle School",
+     "5-8",
+     "250 East 156th Street",
+     "Bronx"
+    ],
+    [
+     "KIPP Affirm Middle School",
+     "5-8",
+     "2720 Jerome Avenue",
+     "Bronx"
+    ],
+    [
+     "KIPP All Middle School",
+     "5-8",
+     "1504 Macombs Road",
+     "Bronx"
+    ],
+    [
+     "KIPP Beyond Middle School",
+     "6-8",
+     "533 West 121st Street",
+     "Manhattan"
+    ],
+    [
+     "KIPP Freedom Middle School",
+     "5-8",
+     "1825 Prospect Avenue",
+     "Bronx"
+    ],
+    [
+     "KIPP Infinity Middle School",
+     "5-8",
+     "625 West 133rd Street",
+     "Manhattan"
+    ],
+    [
+     "KIPP STAR College Prep Middle School",
+     "5-8",
+     "625 West 133rd Street",
+     "Manhattan"
+    ],
+    [
+     "KIPP Washington Heights Middle School",
+     "5-8",
+     "21 Jumel Place",
+     "Manhattan"
+    ],
+    [
+     "KIPP NYC College Prep High School - Lower School",
+     "9-10",
+     "200 East 138th Street",
+     "Bronx"
+    ],
+    [
+     "KIPP NYC College Prep High School - Upper School",
+     "11-12",
+     "201 East 144th Street",
+     "Bronx"
+    ]
+   ]
+  },
+  "Achievement First": {
+   "url": "https://www.achievementfirst.org/schools/new-york/",
+   "claimed_total": "23 schools",
+   "campuses": [
+    [
+     "Achievement First Apollo Elementary School",
+     "K-4",
+     "350 Linwood Street",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First Apollo Middle School",
+     "5-8",
+     "301 Vermont Street",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First Aspire Elementary School",
+     "K-4",
+     "982 Hegeman Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First Aspire Middle School",
+     "5-8",
+     "970 Vermont Street",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First Brooklyn High School",
+     "9-12",
+     "1485 Pacific Street",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First Brownsville Elementary School",
+     "K-4",
+     "2021 Bergen Street",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First Brownsville Middle School",
+     "5-8",
+     "2021 Bergen Street",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First Bushwick Elementary School",
+     "K-4",
+     "125 Covert Street",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First Bushwick Middle School",
+     "5-8",
+     "1300 Greene Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First Crown Heights Elementary School",
+     "K-4",
+     "790 East New York Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First Crown Heights Middle School",
+     "5-8",
+     "790 East New York Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First East New York Elementary School",
+     "K-4",
+     "557 Pennsylvania Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First East New York Middle School",
+     "5-8",
+     "158 Richmond Street",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First Endeavor Elementary School",
+     "K-4",
+     "510 Waverly Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First Endeavor Middle School",
+     "5-8",
+     "510 Waverly Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First Legacy Elementary School",
+     "K-3",
+     "118-49 Montauk Street",
+     "Queens"
+    ],
+    [
+     "Achievement First Legacy Middle School",
+     null,
+     "115-30 221st Street",
+     "Queens"
+    ],
+    [
+     "Achievement First Linden Elementary School",
+     "K-4",
+     "800 Van Siclen Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First Linden Middle School",
+     "5-8",
+     "2390 Pitkin Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First North Brooklyn Prep Elementary School",
+     "K-4",
+     "200 Woodbine Street",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First North Brooklyn Prep Middle School",
+     "5-8",
+     "200 Woodbine Street",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First Ujima High School",
+     "9-12",
+     "475 Euclid Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Achievement First University Prep High School",
+     "9-12",
+     "35 Starr Street",
+     "Brooklyn"
+    ]
+   ]
+  },
+  "Ascend Public Charter Schools": {
+   "url": "https://www.ascendlearning.org/schools",
+   "claimed_total": "17 schools",
+   "campuses": [
+    [
+     "Brooklyn Ascend Charter Elementary School",
+     "K-4",
+     "205 Rockaway Parkway",
+     "Brooklyn"
+    ],
+    [
+     "Brownsville Ascend Charter Elementary School",
+     "K-4",
+     "1501 Pitkin Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Bushwick Ascend Charter Elementary School",
+     "K-4",
+     "751 Knickerbocker Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Canarsie Ascend Charter Elementary School",
+     "K-4",
+     "9719 Flatlands Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Central Brooklyn Ascend Charter Elementary School",
+     "K-4",
+     "465 East 29th Street",
+     "Brooklyn"
+    ],
+    [
+     "Cypress Hills Ascend Charter Elementary School",
+     "K-4",
+     "396 Grant Avenue",
+     "Brooklyn"
+    ],
+    [
+     "East Brooklyn Ascend Charter Elementary School",
+     "K-4",
+     "260 Shepherd Avenue",
+     "Brooklyn"
+    ],
+    [
+     "East Flatbush Ascend Charter Elementary School",
+     "K-4",
+     "870 Albany Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Flatbush Ascend Charter Elementary School",
+     "K-4",
+     "123 Linden Boulevard",
+     "Brooklyn"
+    ],
+    [
+     "Brooklyn Ascend Charter Middle School",
+     "5-8",
+     "123 East 98th Street",
+     "Brooklyn"
+    ],
+    [
+     "Brownsville Ascend Charter Middle School",
+     "5-8",
+     "1501 Pitkin Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Bushwick Ascend Charter Middle School",
+     "5-8",
+     "2 Aberdeen Street",
+     "Brooklyn"
+    ],
+    [
+     "Canarsie Ascend Charter Middle School",
+     "5-8",
+     "744 East 87th Street",
+     "Brooklyn"
+    ],
+    [
+     "Central Brooklyn Ascend Charter Middle School",
+     "5-8",
+     "1886 Nostrand Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Cypress Hills Ascend Charter Middle School",
+     "5-7",
+     "2840 Atlantic Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Flatbush Ascend Charter Middle School",
+     "5-8",
+     "1833 Nostrand Avenue",
+     "Brooklyn"
+    ],
+    [
+     "Brooklyn Ascend Charter High School",
+     "9-12",
+     "1501 Pitkin Avenue",
+     "Brooklyn"
+    ]
+   ]
+  },
+  "Uncommon Schools": {
+   "url": "https://uncommonschools.org/our-schools/",
+   "claimed_total": "26 NYC campuses (3 Pre-K incl. 1 opening fall 2026)",
+   "campuses": [
+    [
+     "Uncommon Excellence Pre-K",
+     "PK",
+     "226 Patchen Avenue",
+     "Brooklyn",
+     "11233",
+     "718-638-1830",
+     null
+    ],
+    [
+     "Uncommon Crown Heights Pre-K",
+     "PK",
+     "850 Montgomery Street",
+     "Brooklyn",
+     "11213",
+     "718-635-9860",
+     "Ocean Hill Pre-K"
+    ],
+    [
+     "Uncommon Excellence Boys Elementary School",
+     "K-4",
+     "225 Patchen Avenue",
+     "Brooklyn",
+     "11233",
+     null,
+     "Excellence Boys Charter School"
+    ],
+    [
+     "Uncommon Excellence Girls Elementary School",
+     "K-4",
+     "794 Monroe Street",
+     "Brooklyn",
+     "11221",
+     "718-638-1875",
+     "Excellence Girls Charter School"
+    ],
+    [
+     "Uncommon Kings Elementary School",
+     "K-4",
+     "905 Winthrop Street",
+     "Brooklyn",
+     "11203",
+     "347-390-0460",
+     "Kings Elementary School"
+    ],
+    [
+     "Uncommon Bed-Stuy West Elementary School",
+     "K-4",
+     "141 Macon Street",
+     "Brooklyn",
+     "11216",
+     "718-636-0360",
+     "Leadership Prep Bedford Stuyvesant Elementary Academy"
+    ],
+    [
+     "Uncommon Brownsville South Elementary School",
+     "K-4",
+     "985 Rockaway Avenue",
+     "Brooklyn",
+     "11212",
+     "718-669-7461",
+     "Leadership Prep Brownsville Elementary Academy"
+    ],
+    [
+     "Uncommon Canarsie Elementary School",
+     "K-4",
+     "1001 East 100 Street",
+     "Brooklyn",
+     "11236",
+     "347-390-0570",
+     "Leadership Prep Canarsie Elementary Academy"
+    ],
+    [
+     "Uncommon Brownsville North Elementary School",
+     "K-4",
+     "51 Christopher Avenue",
+     "Brooklyn",
+     "11212",
+     "718-250-5767",
+     "Leadership Prep Ocean Hill Elementary Academy"
+    ],
+    [
+     "Uncommon Crown Heights Elementary School",
+     "K-4",
+     "791 Empire Boulevard",
+     "Brooklyn",
+     "11213",
+     "347-390-3190",
+     "Ocean Hill Elementary School"
+    ],
+    [
+     "Uncommon Williamsburg Elementary School",
+     "K-4",
+     "140 Montrose Avenue",
+     "Brooklyn",
+     "11206",
+     "718-489-0940",
+     "Williamsburg Elementary School"
+    ],
+    [
+     "Uncommon Bed-Stuy East Middle School",
+     "5-8",
+     null,
+     "Brooklyn",
+     null,
+     null,
+     "Bedford Stuyvesant Collegiate Charter School"
+    ],
+    [
+     "Uncommon Excellence Boys Middle School",
+     "5-8",
+     "225 Patchen Avenue",
+     "Brooklyn",
+     "11233",
+     null,
+     "Excellence Boys Charter School"
+    ],
+    [
+     "Uncommon Excellence Girls Middle School",
+     "5-8",
+     "794 Monroe Street",
+     "Brooklyn",
+     "11221",
+     "718-638-1875",
+     "Excellence Girls Charter School"
+    ],
+    [
+     "Uncommon Kings Middle School",
+     "5-8",
+     "1084 Lenox Road",
+     "Brooklyn",
+     "11212",
+     null,
+     "Kings Collegiate Charter School"
+    ],
+    [
+     "Uncommon Bed-Stuy West Middle School",
+     "5-8",
+     "141 Macon Street",
+     "Brooklyn",
+     "11216",
+     "347-390-0290",
+     "Leadership Prep Bedford Stuyvesant Middle Academy"
+    ],
+    [
+     "Uncommon Brownsville South Middle School",
+     "5-8",
+     "213 Osborn Street",
+     "Brooklyn",
+     "11212",
+     "347-390-0540",
+     "Leadership Prep Brownsville Middle Academy"
+    ],
+    [
+     "Uncommon Canarsie Middle School",
+     "5-8",
+     "1070 East 104 Street",
+     "Brooklyn",
+     "11236",
+     "347-390-0560",
+     "Leadership Prep Canarsie Middle Academy"
+    ],
+    [
+     "Uncommon Brownsville North Middle School",
+     "5-8",
+     "51 Christopher Avenue",
+     "Brooklyn",
+     "11212",
+     "347-390-0550",
+     "Leadership Prep Ocean Hill Middle Academy"
+    ],
+    [
+     "Uncommon Ocean Hill Middle School",
+     "5-8",
+     "1137 Herkimer Street",
+     "Brooklyn",
+     "11233",
+     "718-250-5765",
+     "Ocean Hill Collegiate Charter School"
+    ],
+    [
+     "Uncommon Williamsburg Middle School",
+     "5-8",
+     "157 Wilson Street",
+     "Brooklyn",
+     "11211",
+     "718-302-4018",
+     "Williamsburg Collegiate Charter School"
+    ],
+    [
+     "Uncommon Charter High School",
+     "9-12",
+     "1485 Pacific Street",
+     "Brooklyn",
+     "11216",
+     "718-638-1868",
+     null
+    ],
+    [
+     "Uncommon Collegiate Charter High School",
+     "9-12",
+     "832 Marcy Avenue",
+     "Brooklyn",
+     "11216",
+     "347-390-0300",
+     null
+    ],
+    [
+     "Uncommon Preparatory Charter High School",
+     "9-12",
+     "6565 Flatlands Avenue",
+     "Brooklyn",
+     "11236",
+     "718-307-5077",
+     null
+    ],
+    [
+     "Uncommon Leadership Charter High School",
+     "9-12",
+     "999 Jamaica Avenue",
+     "Brooklyn",
+     "11208",
+     "347-473-8780",
+     null
+    ]
+   ],
+   "columns": [
+    "name",
+    "grades",
+    "street",
+    "borough",
+    "zip",
+    "phone",
+    "formerly"
+   ],
+   "note": "Addresses, phones and former names from each school page on nyc.uncommonschools.org. The site's list links \"Crown Heights Elementary\" to the Ocean Hill Middle School page; the correct page is /crown-heights-elementary/. Bed-Stuy Pre-K (141 Macon St) opens fall 2026 and is left out until it appears on the state or FINDER lists."
+  }
+ }
+}
