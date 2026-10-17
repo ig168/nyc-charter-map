@@ -92,9 +92,9 @@ window.google = { accounts: { id: {
 def ctx_new(browser, viewport=DESKTOP, tiles='blank', gsi_user='1', **kw):
     c = browser.new_context(viewport=viewport, accept_downloads=True, **kw)
     if tiles == 'abort':
-        c.route('**/*cartocdn.com/**', lambda r: r.abort())
+        c.route('**/tile.openstreetmap.org/**', lambda r: r.abort())
     else:
-        c.route('**/*cartocdn.com/**', lambda r: r.fulfill(status=200, content_type='image/png', body=TILE))
+        c.route('**/tile.openstreetmap.org/**', lambda r: r.fulfill(status=200, content_type='image/png', body=TILE))
     c.route('https://accounts.google.com/gsi/client', lambda r: r.fulfill(status=200, content_type='text/javascript', body=FAKE_GSI))
     def mint(route):
         q = route.request.url.split('?', 1)[1]
@@ -114,7 +114,7 @@ class Page:
         self.p = ctx.new_page()
         self.errors, self.dialogs = [], []
         self.p.on('pageerror', lambda e: self.errors.append(str(e)))
-        self.p.on('console', lambda m: m.type == 'error' and not re.search(r'cartocdn|favicon|Failed to load resource', m.text) and self.errors.append(m.text))
+        self.p.on('console', lambda m: m.type == 'error' and not re.search(r'openstreetmap|favicon|Failed to load resource', m.text) and self.errors.append(m.text))
         self.p.on('dialog', lambda d: (self.dialogs.append(d.message), d.dismiss()))
         self.p.goto(BASE + path)
         self.p.wait_for_selector('body[data-ready=true]', timeout=15000)

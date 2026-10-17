@@ -2,7 +2,7 @@
 
 /**
  * Security headers. The CSP allows only what the app needs: its own files, Google Identity
- * Services for sign-in, CARTO map tiles, Esri satellite imagery and Google profile photos. Leaflet is self-hosted.
+ * Services for sign-in, OpenStreetMap tiles, Esri satellite imagery and Google profile photos. Leaflet is self-hosted.
  */
 function securityHeaders({ secure }) {
   const csp = [
@@ -13,7 +13,7 @@ function securityHeaders({ secure }) {
     "form-action 'self'",
     "script-src 'self' https://accounts.google.com/gsi/client",
     "style-src 'self' https://accounts.google.com/gsi/style",
-    "img-src 'self' data: https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://lh3.googleusercontent.com",
+    "img-src 'self' data: https://tile.openstreetmap.org https://server.arcgisonline.com https://lh3.googleusercontent.com",
     "connect-src 'self' https://accounts.google.com/gsi/",
     'frame-src https://accounts.google.com/gsi/',
     "font-src 'self'",

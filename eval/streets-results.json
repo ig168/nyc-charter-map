@@ -25,7 +25,7 @@
   },
   "STR-07": {
     "status": "Pass",
-    "evidence": "4\u00d7 CPU throttle, panning Midtown \u2192 Downtown Brooklyn: 301 tiles; average draw z14 4.2 ms, z16 4.9 ms, z18 3.3 ms (target < 50 ms at 16). One-time data prep 192 ms (unthrottled load). PERF-01 rerun: Pass (filter changes 104, 92, 77, 78 ms, all < 200 ms)."
+    "evidence": "4\u00d7 CPU throttle, panning Midtown \u2192 Downtown Brooklyn: 301 tiles; average draw z14 4.6 ms, z16 4.7 ms, z18 3.2 ms (target < 50 ms at 16). One-time data prep 177 ms (unthrottled load). PERF-01 rerun: Pass (filter changes 78, 86, 80, 69 ms, all < 200 ms)."
   },
   "STR-09": {
     "status": "Pass",
@@ -33,6 +33,6 @@
   },
   "STR-08": {
     "status": "Pass",
-    "evidence": "Full app: base layer = CARTO street tiles (21 tile requests), satellite switch present, embedded street layer not loaded. Unit tests 40/40 pass; full eval suite P0 37/37  P1 8/8 (45 of 45)."
+    "evidence": "Full app: base layer = OpenStreetMap street tiles (21 tile requests), satellite switch present, embedded street layer not loaded. Unit tests 40/40 pass; full eval suite P0 37/37  P1 8/8 (45 of 45)."
   }
 }

@@ -463,7 +463,7 @@ def str08(b):
             u = r.request.url
             if u.startswith(f'http://127.0.0.1:{APP_PORT}'):
                 return r.continue_()
-            if 'basemaps.cartocdn.com' in u or 'arcgisonline' in u:
+            if 'tile.openstreetmap.org' in u or 'arcgisonline' in u:
                 tiles.append(u)
                 return r.fulfill(status=204)
             return r.abort()
@@ -478,7 +478,7 @@ def str08(b):
         check(base == 'tiles', f'full app base layer is {base}')
         check(has_switch == 1, 'satellite switch missing')
         check(no_streets_js, 'embedded street data loaded in full app')
-        check(any('voyager' in t for t in tiles), 'no CARTO tiles requested')
+        check(any('tile.openstreetmap.org' in t for t in tiles), 'no OpenStreetMap tiles requested')
     finally:
         proc.kill()
     unit = subprocess.run(['node', '--test', *sorted(str(x) for x in (ROOT / 'test').glob('*.test.js'))], cwd=ROOT, capture_output=True, text=True, timeout=300)
@@ -489,7 +489,7 @@ def str08(b):
     summary = next((l for l in full.stdout.splitlines() if l.startswith('P0 ')), '')
     fails = [l.strip() for l in full.stdout.splitlines() if l.strip().startswith('✗')]
     check(summary.startswith('P0 37/37') and 'P1 8/8' in summary and not fails, f'eval suite: {summary} {fails[:3]}')
-    record('STR-08', 'Pass', f'Full app: base layer = CARTO street tiles ({len(tiles)} tile requests), satellite switch present, embedded street layer not loaded. Unit tests {passed.group(1)}/{passed.group(1)} pass; full eval suite {summary.strip()} (45 of 45).')
+    record('STR-08', 'Pass', f'Full app: base layer = OpenStreetMap street tiles ({len(tiles)} tile requests), satellite switch present, embedded street layer not loaded. Unit tests {passed.group(1)}/{passed.group(1)} pass; full eval suite {summary.strip()} (45 of 45).')
 
 
 def str09(b):

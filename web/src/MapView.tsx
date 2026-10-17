@@ -27,10 +27,11 @@ export interface MapApi {
   clusterSizes(): number[];
 }
 
-const OSM_CARTO =
-  '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>';
+// Free, keyless map sources: OpenStreetMap's standard tiles, and Esri imagery + reference labels for satellite.
+const OSM = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors';
+const ESRI_REF = 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference';
 const THUMB: Record<string, string> = {
-  map: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/12/1206/1538.png',
+  map: 'https://tile.openstreetmap.org/12/1206/1538.png',
   satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/12/1538/1206',
 };
 const PIN_SVG =
@@ -86,13 +87,14 @@ export function MapView() {
         st.baseLayer = 'outline';
       }
     } else {
-      const streets = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19, subdomains: 'abcd', attribution: OSM_CARTO });
+      const streets = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: OSM });
       // Satellite = Esri World Imagery with street and place labels on top (like Google's hybrid view)
       const satellite = L.layerGroup([
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
           maxZoom: 19, maxNativeZoom: 18, attribution: 'Imagery &copy; <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>, Maxar, Earthstar Geographics',
         }),
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png', { maxZoom: 19, subdomains: 'abcd', attribution: OSM_CARTO }),
+        L.tileLayer(`${ESRI_REF}/World_Transportation/MapServer/tile/{z}/{y}/{x}`, { maxZoom: 19, maxNativeZoom: 18 }),
+        L.tileLayer(`${ESRI_REF}/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}`, { maxZoom: 19, maxNativeZoom: 18 }),
       ]);
       let tileErrors = 0;
       const watch = (layer: any) => {
