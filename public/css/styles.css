@@ -1,7 +1,7 @@
 /* ==========================================================================
    NYC Charter School Finder
    ========================================================================== */
-:root {
+:root { color-scheme: light; /* the app has one light theme; stops dark-mode browsers from darkening dialogs and form controls */
   --ink: #13294b;
   --ink-2: #1f3a66;
   --gold: #f4b740;
@@ -324,7 +324,7 @@ a { color: var(--ink-2); }
 /* ---- Compare, dialogs, toast ----------------------------------------------- */
 .compare-bar { position: fixed; z-index: 1050; left: 50%; bottom: 20px; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; padding: 8px 10px 8px 16px; background: var(--ink); color: #fff; border-radius: 999px; box-shadow: var(--shadow-md); font-size: 14px; max-width: calc(100vw - 24px); }
 .compare-bar .btn--primary { background: var(--gold); color: var(--ink); }
-.dialog { width: min(440px, calc(100vw - 32px)); border: 0; border-radius: 16px; padding: 26px 24px 20px; box-shadow: var(--shadow-md); color: var(--text); }
+.dialog { width: min(440px, calc(100vw - 32px)); border: 0; border-radius: 16px; padding: 26px 24px 20px; box-shadow: var(--shadow-md); color: var(--text); background: var(--surface); }
 .dialog--wide { width: min(1000px, calc(100vw - 24px)); }
 .dialog::backdrop { background: rgba(10,20,40,.5); }
 .dialog h2 { margin: 0 0 6px; color: var(--ink); font-size: 21px; }
