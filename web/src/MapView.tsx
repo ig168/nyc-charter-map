@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useDeferredValue, useEffect, useRef, useState } from 'react';
 import { useApp } from './App';
 import type { Origin, SchoolSummary } from './types';
 import { BKEY, BOROUGHS, boroughName, clusterLib, core, debounce, esc, fmtNum, gradeLabel, lang, NYC_CENTER, t } from './lib';
@@ -41,9 +41,12 @@ export function MapView() {
   const app = useApp();
   const el = useRef<HTMLDivElement>(null);
   const [notice, setNotice] = useState<{ text: string; kind: string }>({ text: '', kind: '' });
+  const [areaPill, setAreaPill] = useState(false);
   // Leaflet lives outside React; this ref always holds the latest app state for its callbacks.
+  // Pins redraw at lower priority than the chip/box the user just touched (keeps filter clicks < 200 ms, PERF-01)
+  const deferredFiltered = useDeferredValue(app.filtered);
   const A = useRef(app);
-  A.current = app;
+  A.current = { ...app, filtered: deferredFiltered };
   const M = useRef<any>(null); // { map, markerLayer, markers, ... }
 
   // ---- Create the map once -------------------------------------------------------------------
@@ -180,6 +183,13 @@ export function MapView() {
     st.markerLayer = L.layerGroup().addTo(map);
     map.on('zoomend moveend', debounce(() => renderMarkers(), 40));
     map.on('moveend', debounce(() => A.current.onMapMoved(), 120));
+    // "Search this area": offered after the person pans the map themselves (SX-11)
+    let dragged = false;
+    map.on('dragstart', () => (dragged = true));
+    map.on('moveend', () => {
+      if (dragged && !A.current.filters.inView) setAreaPill(true);
+      dragged = false;
+    });
     map.on('popupclose', () => (st.openPopupId = null));
 
     // Buttons inside pin cards (popups are plain HTML, so one delegated listener handles them)
@@ -208,6 +218,9 @@ export function MapView() {
       if (!m) {
         m = L.marker([s.lat, s.lng], { icon: pinIcon(s), title: s.name, keyboard: true, riseOnHover: true });
         m.on('click', () => openPinCard(s.id));
+        // pin ↔ card linking (SX-11)
+        m.on('mouseover', () => A.current.setHoverId(s.id));
+        m.on('mouseout', () => A.current.setHoverId(null));
         m._ncsState = pinState(s);
         st.markers.set(s.id, m);
       } else if (m._ncsState !== pinState(s)) {
@@ -355,12 +368,21 @@ export function MapView() {
   useEffect(() => {
     const st = M.current;
     if (!st) return;
-    const h = setTimeout(() => {
+    // Same set of schools in a new order (e.g. typing switches to "best match")? The pins don't change.
+    const sig = (deferredFiltered as SchoolSummary[]).map((s) => s.id).sort().join('|');
+    const key = { sig, saved: app.saved, sel: app.selectedId, origin: app.origin, lang: app.lang };
+    const prev = st.lastKey;
+    if (prev && prev.sig === key.sig && prev.saved === key.saved && prev.sel === key.sel && prev.origin === key.origin && prev.lang === key.lang) return;
+    // Idle-time, so a keystroke or click arriving meanwhile is handled first (SXP-01); 250 ms cap keeps pins prompt.
+    const ric: any = (window as any).requestIdleCallback || ((f: () => void) => setTimeout(f, 0));
+    const cic: any = (window as any).cancelIdleCallback || clearTimeout;
+    const h = ric(() => {
+      st.lastKey = key;
       st.renderMarkers();
       st.refreshPopup();
-    }, 0);
-    return () => clearTimeout(h);
-  }, [app.filtered, app.saved, app.selectedId, app.origin, app.lang]);
+    }, { timeout: 250 });
+    return () => cic(h);
+  }, [deferredFiltered, app.saved, app.selectedId, app.origin, app.lang]);
 
   // Fit the map to the results when a filter asks for it (borough, district, zip, clear all, first load)
   useEffect(() => {
@@ -401,8 +423,21 @@ export function MapView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [app.lang]);
 
+  useEffect(() => {
+    if (app.filters.inView) setAreaPill(false);
+  }, [app.filters.inView]);
+
   return (
     <>
+      {areaPill ? (
+        <button type="button" className="area-pill" id="search-area" onClick={() => {
+          setAreaPill(false);
+          app.updateFilters('inView', (f: any) => (f.inView = true));
+        }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2.2" /><path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" /></svg>
+          {t('searchThisArea')}
+        </button>
+      ) : null}
       <div id="map" ref={el}></div>
       <div className="map-notice" id="map-notice" role="status" hidden={!notice.text} data-kind={notice.kind}>{notice.text}</div>
     </>

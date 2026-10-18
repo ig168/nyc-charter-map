@@ -46,6 +46,7 @@ ${body}
 <script>window.NCS_DATA = ${safeJson(data)};</script>
 <script>window.NCS_BASEMAP = ${read('data/boroughs.geojson')};</script>
 <script>window.NCS_STREETS = ${read('data/basemap/streets.json')};</script>
+<script>window.NCS_CSD = ${read('public/data/csd.json')};</script>
 <script>${read('public/js/streets.js')}</script>
 <script>${read('public/js/i18n.js')}</script>
 <script>${read('public/js/core.js')}</script>

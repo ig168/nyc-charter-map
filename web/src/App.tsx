@@ -1,8 +1,10 @@
 import React, { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { Filters, Origin, Pending, SavedItem, SchoolDetail, SchoolSummary, User, View } from './types';
 import {
-  anyFilter, api, chipList, cloneFilters, COMPARE_MAX, core, FilterKey, i18n, isActive, lang, localToday, MOBILE, ssGet, ssSet, t, track,
+  anyFilter, api, chipList, cloneFilters, COMPARE_MAX, core, FilterKey, i18n, isActive, lang, localToday, MOBILE, searchLib, searchTextStore, ssGet, ssSet, t, track,
 } from './lib';
+import { districtAt } from './district';
+import { setHighlightEngine } from './SearchBox';
 import { TopBar } from './TopBar';
 import { Sidebar } from './Sidebar';
 import { MapView, MapApi } from './MapView';
@@ -44,8 +46,10 @@ export function App() {
   const [boundsVersion, setBoundsVersion] = useState(0);
   const [fitToken, setFitToken] = useState(0);
   const [highlightId, setHighlightId] = useState<string | null>(null);
+  const [hoverId, setHoverId] = useState<string | null>(null);
+  const [notice, setNotice] = useState<{ text: string; undo?: () => void } | null>(null);
   const [locateMsg, setLocateMsg] = useState<{ text: string; kind: '' | 'error' | 'ok'; clearable?: boolean }>({ text: '', kind: '' });
-  const [searchText, setSearchText] = useState('');
+  const setSearchText = searchTextStore.set;
   const [zipText, setZipText] = useState('');
   const [zipError, setZipError] = useState('');
   const [toastState, setToastState] = useState<{ msg: string; kind: string } | null>(null);
@@ -65,22 +69,56 @@ export function App() {
     toastTimer.current = setTimeout(() => setToastState(null), 3600);
   }, []);
 
-  // ---- Filtering (SRCH-01..09, MAP-03) -----------------------------------------------------------
+  // ---- Filtering (SRCH-01..09, MAP-03) and smart search (search upgrade SX-01..SX-08) -------------------
+  const search = useMemo(() => {
+    const e = searchLib.createSearch(schools);
+    setHighlightEngine(e);
+    return e;
+  }, [schools]);
+  const rank = useMemo(() => (filters.q ? search.rank(filters.q) : null), [search, filters.q]);
+  const searchRef = useLatest(search);
   const filterCtx = useMemo(
-    () => ({ saved: new Set(saved.keys()), inBounds: mapApi.current ? (s: SchoolSummary) => mapApi.current!.inBounds(s) : null }),
+    () => ({ saved: new Set(saved.keys()), inBounds: mapApi.current ? (s: SchoolSummary) => mapApi.current!.inBounds(s) : null, rank, origin }),
     // boundsVersion changes when the map moves with "Only in map area" on
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [saved, boundsVersion, loaded],
+    [saved, boundsVersion, loaded, rank, origin],
   );
   const filterStart = useRef(performance.now());
-  const filtered = useMemo(() => {
+  const { filtered, nearest } = useMemo(() => {
     filterStart.current = performance.now();
-    const list = core.filterSchools(schools, filters, filterCtx);
-    return core.sortSchools(list, sort === 'distance' && !origin ? 'name' : sort, { origin, today: localToday() }) as SchoolSummary[];
-  }, [schools, filters, filterCtx, sort, origin]);
+    let list = core.filterSchools(schools, filters, filterCtx);
+    let fallback = false;
+    // A location search never comes back empty: with nothing inside the radius, show the 5 nearest (SX-07)
+    if (!list.length && origin && filters.radius) {
+      const wide = core.filterSchools(schools, { ...filters, radius: 0 }, filterCtx);
+      if (wide.length) {
+        list = core.sortSchools(wide, 'distance', { origin }).slice(0, 5);
+        fallback = true;
+      }
+    }
+    const effSort = sort === 'distance' && !origin ? 'name' : sort === 'relevance' && !rank ? 'name' : sort;
+    const sorted = fallback ? list : (core.sortSchools(list, effSort, { origin, today: localToday(), rank, compare: search.compare, district: origin?.district }) as SchoolSummary[]);
+    (window as any).__lastFilterMs = performance.now() - filterStart.current; // filter + rank + sort only
+    return { filtered: sorted, nearest: fallback };
+  }, [schools, filters, filterCtx, sort, origin, rank, search]);
   useEffect(() => {
-    (window as any).__lastFilterMs = performance.now() - filterStart.current;
+    (window as any).__lastRenderMs = performance.now() - filterStart.current; // through commit
   }, [filtered]);
+  // Warm the search engine while idle so the first keystroke isn't the one paying for JIT and caches
+  useEffect(() => {
+    if (!schools.length) return;
+    const ric: any = (window as any).requestIdleCallback || ((f: () => void) => setTimeout(f, 200));
+    // one small step per idle slot, so a keystroke never waits behind the warm-up
+    const steps = [() => search.rank('k'), () => search.suggest('k', { limit: 8 }), () => search.rank('harlem'), () => search.suggest('success acad', { limit: 8 }), () => search.didYouMean('harlemvilage')];
+    let alive = true;
+    const next = () => {
+      if (!alive || !steps.length) return;
+      try { steps.shift()!(); } catch { /* warm-up only */ }
+      ric(next, { timeout: 2000 });
+    };
+    ric(next, { timeout: 2000 });
+    return () => { alive = false; };
+  }, [search, schools.length]);
 
   const noteFilter = useCallback((name: FilterKey, f: Filters) => {
     setFilterOrder((o) => {
@@ -97,6 +135,11 @@ export function App() {
       mutate(f);
       setFilters(f);
       noteFilter(name, f);
+      setNotice(null);
+      if (name === 'q') {
+        // best match first while searching; back to A–Z when the box is cleared
+        setSort((cur) => (f.q && cur === 'name' ? 'relevance' : !f.q && cur === 'relevance' ? 'name' : cur));
+      }
       if (fit) setFitToken((n) => n + 1);
     },
     [noteFilter, S],
@@ -123,8 +166,9 @@ export function App() {
       if (f.zip) fx.zip = f.zip;
       if (f.savedOnly) fx.saved = true;
       if (f.inView) fx.inView = true;
-      if (S.current.sort !== 'name') fx.sort = S.current.sort;
-      track('search_performed', { query: f.q.slice(0, 100), filters: fx, result_count: filteredRef.current.length });
+      if (S.current.sort !== 'name' && S.current.sort !== 'relevance') fx.sort = S.current.sort;
+      const p = searchLib.parse(f.q);
+      track('search_performed', { query: p.zip || p.address ? '' : f.q.slice(0, 100), filters: fx, result_count: filteredRef.current.length });
     }, 900);
   }, [filters, sort, loaded, S]);
   const filteredRef = useLatest(filtered);
@@ -152,13 +196,20 @@ export function App() {
         else if (key === 'zip') f.zip = '';
         else if (key === 'savedOnly') f.savedOnly = false;
         else if (key === 'inView') f.inView = false;
+        else if (key === 'networks') f.networks.delete(value!);
+        else if (key === 'places') f.places.delete(value!);
+        else if (key === 'radius') f.radius = 0;
       });
     },
     [updateFilters],
   );
 
   const clearAll = useCallback(() => {
-    setFilters(core.emptyFilters());
+    const e = core.emptyFilters();
+    if (S.current.origin) e.radius = S.current.filters.radius;
+    setFilters(e);
+    setNotice(null);
+    setSort((cur) => (cur === 'relevance' ? 'name' : cur));
     setFilterOrder([]);
     setSearchText('');
     setZipText('');
@@ -172,14 +223,18 @@ export function App() {
   useEffect(() => {
     if (!loaded) return;
     const p = new URLSearchParams();
-    if (filters.q) p.set('q', filters.q);
+    // location-like text (a zip or street address) never goes in the URL (SXS-01)
+    const qp = filters.q ? searchLib.parse(filters.q) : null;
+    if (filters.q && !(qp.zip || qp.address)) p.set('q', filters.q);
     if (filters.boroughs.size) p.set('borough', [...filters.boroughs].join(','));
     if (filters.levels.size) p.set('level', [...filters.levels].join(','));
     if (filters.entry) p.set('entry', filters.entry);
     if (filters.districts.size) p.set('district', [...filters.districts].sort((a, b) => a - b).join(','));
     if (filters.zip) p.set('zip', filters.zip);
     if (filters.savedOnly) p.set('saved', '1');
-    if (sort !== 'name') p.set('sort', sort);
+    if (filters.networks.size) p.set('network', [...filters.networks].join('|'));
+    if (filters.places.size) p.set('place', [...filters.places].join('|'));
+    if (sort !== 'name' && sort !== 'relevance' && sort !== 'distance') p.set('sort', sort);
     if (selectedId) p.set('school', selectedId);
     if (view === 'my') p.set('view', 'my');
     const h = p.toString();
@@ -201,10 +256,12 @@ export function App() {
     const z = p.get('zip');
     if (z && core.isNycZip(z)) f.zip = z;
     f.savedOnly = p.get('saved') === '1';
+    for (const n of (p.get('network') || '').split('|')) if (n && list.some((s) => s.network === n)) f.networks.add(n);
+    for (const pl of (p.get('place') || '').split('|')) if (pl && pl.length <= 80 && list.some((s) => core.placeMatch(s, new Set([pl])))) f.places.add(pl);
     setFilters(f);
-    setFilterOrder((['q', 'boroughs', 'levels', 'entry', 'districts', 'zip', 'savedOnly'] as FilterKey[]).filter((k) => isActive(f, k)));
+    setFilterOrder((['q', 'boroughs', 'levels', 'entry', 'districts', 'zip', 'savedOnly', 'networks', 'places'] as FilterKey[]).filter((k) => isActive(f, k)));
     const sortP = p.get('sort');
-    setSort(core.SORTS.includes(sortP) ? (sortP as string) : 'name');
+    setSort(sortP === 'deadline' ? 'deadline' : f.q ? 'relevance' : 'name');
     setSearchText(f.q);
     setZipText(f.zip);
     return { school: p.get('school'), view: p.get('view'), signin: raw === 'signin' };
@@ -423,16 +480,24 @@ export function App() {
     (o: Origin | null, { announce = true } = {}) => {
       setOriginState(o);
       mapApi.current?.setOrigin(o);
+      setNotice(null);
       if (o) {
         setSort('distance');
+        // a location search starts within 2 miles (SX-07); the radius control widens it
+        setFilters((f) => (f.radius ? f : { ...cloneFilters(f), radius: 2 }));
         setLocateMsg({ text: t('distancesFrom', { p: o.label }), kind: 'ok', clearable: true });
         if (announce) toast(t('sortedByDistance'));
+        // which community school district is this? (boundaries load once, lookup stays in the browser)
+        if (o.district === undefined) {
+          districtAt(o.lat, o.lng).then((d) => setOriginState((cur) => (cur && cur.lat === o.lat && cur.lng === o.lng ? { ...cur, district: d } : cur)));
+        }
       } else {
         setLocateMsg({ text: '', kind: '' });
-        setSort((s) => (s === 'distance' ? 'name' : s));
+        setFilters((f) => (f.radius ? { ...cloneFilters(f), radius: 0 } : f));
+        setSort((s) => (s === 'distance' ? (S.current.filters.q ? 'relevance' : 'name') : s));
       }
     },
-    [toast],
+    [toast, S],
   );
 
   const locateError = useCallback((msg: string) => setLocateMsg({ text: msg, kind: 'error' }), []);
@@ -445,14 +510,14 @@ export function App() {
         const { latitude: lat, longitude: lng } = pos.coords;
         if (lat < 40.3 || lat > 41.1 || lng < -74.6 || lng > -73.4) {
           locateError(t('outsideNyc'));
-          document.getElementById('address')?.focus();
+          document.getElementById('search')?.focus();
           return;
         }
         setOrigin({ lat, lng, label: t('yourLocation') });
       },
       (err) => {
         locateError(err.code === 1 ? t('geoDenied') : t('geoFailed'));
-        document.getElementById('address')?.focus();
+        document.getElementById('search')?.focus();
       },
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
     );
@@ -599,6 +664,16 @@ export function App() {
       };
     };
     w.NCS.streetLayer = mapApi.current?.streetLayer || null;
+    // search upgrade eval hooks (read-only; no personal data)
+    w.NCS.searchDebug = (q: string) => {
+      const r = searchRef.current.rank(q);
+      return Object.fromEntries([...r.hits.entries()].map(([id, h]: any) => [id, h.tier]));
+    };
+    w.NCS.distanceTo = (id: string) => {
+      const s = S.current.byId.get(id);
+      return s && S.current.origin ? core.distanceKm(S.current.origin, s) * 0.621371 : null;
+    };
+    w.NCS.hoverPin = (id: string) => setHoverId(id);
     w.NCS.flyTo = (lat: number, lng: number, z: number) => {
       mapApi.current?.map.setView([lat, lng], z, { animate: false });
     };
@@ -611,7 +686,7 @@ export function App() {
 
   const app = {
     schools, byId, loaded, loadError, user, saved, share, setShare, filters, filterOrder, sort, setSort, origin, selectedId, view,
-    compare, details, filtered, highlightId, setHighlightId, locateMsg, setLocateMsg, searchText, setSearchText, zipText, setZipText,
+    compare, details, filtered, nearest, search, rank, hoverId, setHoverId, notice, setNotice, setFilters, highlightId, setHighlightId, locateMsg, setLocateMsg, setSearchText, zipText, setZipText,
     zipError, setZipError, signin, compareOpen, setCompareOpen, mobileView, fitToken, menuOpen, setMenuOpen, districtOpen, setDistrictOpen,
     mapApi, filterCtx, toast, updateFilters, removeFilter, clearAll, toggleSave, updateTracker, openDetail, closeDetail, retryDetail,
     showMy, showExplore, openSignIn, afterSignIn, onSigninClosed, signOut, toggleCompare, setCompare, deleteAccount, setOrigin, nearMe, searchAddress,

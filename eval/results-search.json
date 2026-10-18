@@ -1,0 +1,83 @@
+{
+  "p0_pass": 17,
+  "p0_total": 18,
+  "p1_pass": 1,
+  "rows": {
+    "SX-01": {
+      "status": "Pass",
+      "evidence": "\"kip\" \u2192 19 (top KIPP Academy Elementary School); \"SA\" \u2192 59 (top Success Academy Astor Place Middle School); \"AF\" \u2192 22 (top Achievement First Apollo Elementary School); \"Harlem Success\" \u2192 9 (top Success Academy Harlem 1 Elementary School); \"uncommon\" \u2192 25 (top Uncommon Bed-Stuy East Middle School); \"Bklyn\" \u2192 146 (top in Brooklyn); \"PS 123\" \u2192 note \"Charter schools don\u2019t use PS, IS or MS numbers\u2026\" in suggestions and the empty state."
+    },
+    "SX-02": {
+      "status": "Pass",
+      "evidence": "\"succes academy\" \u2192 top: Success Academy Astor Place Middle School; \"kipp infinty\" \u2192 top: KIPP Infinity Elementary School; \"achievment first\" \u2192 top: Achievement First Apollo Elementary School; \"acad\u00e9my br\u00f6nx\" = \"academy bronx\" (34 identical); \"xyzzy\" \u2192 0."
+    },
+    "SX-03": {
+      "status": "Pass",
+      "evidence": "\"kipp\" tiers 1\u20261 ascending (19); \"harlem\" tiers 1\u20263 ascending (45); \"bronx prep\" tiers 1\u20263 ascending (17); \"Bronx Prep Charter School\" first for \"bronx prep\"; \"harlem\": name matches (tier 1) before neighborhood-only (tier 3); typo-only = tier 4 and appears only when nothing matches literally."
+    },
+    "SX-04": {
+      "status": "Pass",
+      "evidence": "\"kipp\": 19 cards highlight exactly \"KIPP\"; \"academy\": 118 highlights; \"kipp infinty\": card text intact (\"KIPP Infinity Elementary School\"), only the literal word \"KIPP\" highlighted, typo word unmarked."
+    },
+    "SX-05": {
+      "status": "Pass",
+      "evidence": "Staten Island + High school + \"kipp\": Clear the search \u201ckipp\u201d\n(3) \u2192 3; Remove Staten Island\n(2) \u2192 2; Staten Island + Pre-K: 0 options (no single way out); \"harlm villag akademees\" \u2192 5 Harlem Village campuses via typo tolerance; \"harlemvillage acadmy\" (0 hits) \u2192 \"Harlem Village Academy Charter High School\" \u2192 1 tap shows results."
+    },
+    "SX-06": {
+      "status": "Pass",
+      "evidence": "Old address and zip fields removed; \"10027\" \u2192 top row \"Schools near 10027 | Sorted by distance\" (list unchanged until chosen); \"350 5th Ave\" \u2192 \"Search this address | 350 5th Ave\", Enter \u2192 \"9 schools within 2 mi of 350 5 AVENUE, Manhattan, New York, NY\"; \"90210\" \u2192 \"90210 isn\u2019t a New York City zip code.\"; Use my location = 1 tap."
+    },
+    "SX-07": {
+      "status": "Pass",
+      "evidence": "\"Schools near 10027\": \"82 schools within 2 mi of ZIP 10027\", every result \u2264 2 mi, sorted by distance (district first); radius 1/2/5/Any \u2192 32/82/197/436; Tottenville at 1 mi \u2192 \"No schools within 1 mi of 7000 HYLAN BOULEVARD, Staten Island, New York, NY. Showing the 5 nearest (closest 6.9 mi).\"."
+    },
+    "SX-08": {
+      "status": "Pass",
+      "evidence": "2090 Adam Clayton Powell Jr Blvd \u2192 \"CSD 5\", 23 district schools first; 200 Bedford Ave Williamsburg \u2192 \"CSD 14\", 13 district schools first; Near me (Midtown) \u2192 \"CSD 2\"; clearing the location removes the banner. Lookup runs in the browser against NYC Open Data boundaries (all 436 campuses land in their listed district)."
+    },
+    "SX-09": {
+      "status": "Pass",
+      "evidence": "1440 px \u2264 8 rows; groups Schools/Networks/Places with secondary labels; arrows wrap; Esc closes; network \u2192 chip (19); place \u2192 chip; empty focus: Use my location, recent searches, shortcuts; 390 px \u2264 6 rows."
+    },
+    "SX-10": {
+      "status": "Pass",
+      "evidence": "First screen: box + borough + grade chips + Saved only; entry/district/map area behind \"Filters (n)\" (desktop K \u2192 \"Filters (1)\", 181 schools); phone bottom sheet: list stays 436 while editing, \"Show 5 schools\" applies \u2192 5."
+    },
+    "SX-11": {
+      "status": "Pass",
+      "evidence": "Pan with map area off \u2192 \"Search this area\" pill; tap \u2192 list 436\u2192116 and pill hides; card hover marks its pin, pin hover marks its card."
+    },
+    "SX-12": {
+      "status": "Pass",
+      "evidence": "#sr-status (polite) = \"19 of 436 schools\" 0.9 s after typing stops; suggestions announce \"8 suggestions available\"; live regions: sugg-status:polite, locate-msg:polite, sr-status:polite, toast:polite; the visible count is no longer live, so nothing announces twice."
+    },
+    "SX-13": {
+      "status": "Pass",
+      "evidence": "ES: placeholder \"Escuela, red, lugar o c\u00f3digo postal\"; groups ['Escuelas', 'Redes', 'Lugares']; \"Escuelas cerca de 10027 | Ordenadas por distancia\"; banner \"82 escuelas a menos de 2 mi de C.P. 10027\"; empty state \"Ninguna escuela cumple con todos estos filtros.\"; no English strings found."
+    },
+    "SX-14": {
+      "status": "Pass",
+      "evidence": "\"kindergarten in Bushwick\" \u2192 line \"Searching for: Entry: K Keep as filters\" \u2192 chips ['Entry: K', 'Bushwick'], 4 schools; \"middle school bronx\" \u2192 line \"Searching for: Middle Keep as filters\" \u2192 chips ['\u201cbronx\u201d', 'Middle'], 72 schools; rule-based (no network call)."
+    },
+    "SXS-01": {
+      "status": "Pass",
+      "evidence": "Address and zip typed, chosen and searched: URL hash never contains them; recent searches = [{\"type\":\"text\",\"label\":\"kipp\",\"value\":\"kipp\"}]\u2026 (no locations); 3 search_performed events, none with an address/zip; server log clean; district lookup downloads the static boundary file and checks it in the browser (no coordinates sent). Address text goes only to /api/geocode (2 calls), as before."
+    },
+    "SXS-02": {
+      "status": "Pass",
+      "evidence": "'<img src=x onerror' \u2192 28 chars, 0.2 ms; '\"><script>alert(1)' \u2192 27 chars, 0.0 ms; '(.*)+$(.*)+$(.*)+$' \u2192 100 chars, 0.4 ms; 'AAAAAAAAAAAAAAAAAA' \u2192 100 chars, 0.1 ms; no dialog, no injected element, no console error."
+    },
+    "SXA-01": {
+      "status": "Pass",
+      "evidence": "Search box: role=combobox aria-expanded=false aria-controls=search-listbox aria-autocomplete=list, aria-activedescendant \u2192 role=option while focus stays in the box; 0 unnamed visible controls; phone Filters sheet takes focus, keeps Tab inside, Esc returns focus to the Filters button. (Contrast/landmarks also covered by e2e A11Y-01.)"
+    },
+    "SXP-01": {
+      "status": "Partial",
+      "evidence": "37 keystrokes measured with Event Timing (keystroke \u2192 next paint): worst 64 ms, p95 56 ms, 3 at 50 ms or more [56, 56, 64]; list painted within 52 ms of the 120 ms typing pause (target: every keystroke < 50 ms, list < 200 ms)."
+    },
+    "SXR-01": {
+      "status": "Pass",
+      "evidence": "360 px ok (top suggestion y=145, Show button y=728); 390 px ok (top suggestion y=145, Show button y=728); no horizontal scroll with suggestions, location banner or sheet open; nothing covers the sheet\u2019s button (List/Map switch hides while it is open)."
+    }
+  }
+}

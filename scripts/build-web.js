@@ -12,7 +12,7 @@ const options = {
   entryPoints: [path.join(ROOT, 'web/src/main.tsx')],
   outfile: path.join(ROOT, 'public/app/app.js'),
   bundle: true,
-  minify: !watch,
+  minify: !watch && !process.env.NO_MINIFY,
   sourcemap: watch ? 'inline' : false,
   format: 'iife',
   target: 'es2020',

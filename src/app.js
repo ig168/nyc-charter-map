@@ -116,7 +116,7 @@ function createApp(config, deps = {}) {
     if (pathname === '/healthz') return sendJson(req, res, 200, { ok: true });
 
     // Static assets (contain no user data)
-    if (isRead && /^\/(app|css|js|vendor|img)\//.test(pathname)) {
+    if (isRead && /^\/(app|css|data|js|vendor|img)\//.test(pathname)) {
       const long = /^\/vendor\//.test(pathname) ? 86400 * 30 : 300;
       if (serveStatic(req, res, pathname, { maxAge: long })) return;
       throw new HttpError(404, 'Not found', 'not_found');

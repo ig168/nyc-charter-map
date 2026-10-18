@@ -143,7 +143,7 @@ test('I18N-01 every UI string exists in English and Spanish', () => {
   const used = new Set([...js.matchAll(/\bt\(\s*'([A-Za-z_]+)'/g)].map((m) => m[1]));
   assert.ok(used.size > 150, `found ${used.size} UI strings`);
   for (const k of used) assert.ok(k in dict.en && k in dict.es, `missing string ${k}`);
-  const untranslated = en.filter((k) => dict.en[k] === dict.es[k] && !/^(boro_(manhattan|brooklyn|queens|staten)|districtShort|noteCount)$/.test(k));
+  const untranslated = en.filter((k) => dict.en[k] === dict.es[k] && !/^(boro_(manhattan|brooklyn|queens|staten)|districtShort|noteCount|nMiles)$/.test(k));
   assert.deepEqual(untranslated, [], 'strings identical in both languages');
 });
 

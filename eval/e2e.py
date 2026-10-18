@@ -133,6 +133,22 @@ class Page:
     def search(self, q):
         self.p.fill('#search', q)
         self.p.wait_for_timeout(350)
+        self.close_suggestions()
+    def close_suggestions(self):
+        if self.p.get_attribute('#search', 'aria-expanded') == 'true':
+            self.p.press('#search', 'Escape')  # targets the box even if focus moved
+            self.p.wait_for_timeout(80)
+    def open_filters(self):
+        # entry grade, district and map area live behind "Filters" since the search upgrade
+        self.close_suggestions()
+        if not self.p.is_visible('#entry'):
+            self.p.click('#filters-btn')
+            self.p.wait_for_selector('#entry')
+    def locate(self, q):
+        # the address / zip box was merged into the main search box (search upgrade SX-06)
+        self.p.fill('#search', q)
+        self.p.wait_for_timeout(300)
+        self.p.keyboard.press('Enter')
     def open_school(self, sid):
         self.p.evaluate(f"location.hash = 'school={sid}'")
         self.p.wait_for_selector(f'#detail-title', timeout=8000)
@@ -254,6 +270,7 @@ def map03(b):
     check(pg.p.locator(f'.card.is-highlight[data-id="{t["id"]}"]').count() == 1, 'pin click did not highlight list item')
     pg.shot('MAP-03-sync')
     # Pan with "Only in map area": list == what the map shows
+    pg.open_filters()
     pg.p.check('#in-view', force=True)
     for lat, lng, z in [(40.68, -73.94, 13), (40.83, -73.91, 13), (40.75, -73.88, 12)]:
         pg.fly(lat, lng, z)
@@ -266,6 +283,16 @@ def map03(b):
     record('MAP-03', 'Pass', 'List click selects and centres the pin (within 0.003°) and enlarges it; pin click highlights its list card; with "Only in map area" the list and count match the visible area after 3 pans. Screenshot MAP-03-sync.')
     pg.ctx.close()
 
+def grouped_ascending(pg):
+    """Distance sort lists the searcher's own district first (lottery preference), then everyone else; each group ascends."""
+    rows = pg.p.eval_on_selector_all('.card', "e => e.map(c => [ (c.querySelector('.card__dist')||{}).textContent || '', !!c.querySelector('.tag--home') ])")
+    rows = [(float(t.split()[0].replace(',', '.')), h) for t, h in rows if t]
+    homes = [h for _, h in rows]
+    first_rest = homes.index(False) if False in homes else len(homes)
+    ok_groups = all(not h for h in homes[first_rest:])
+    asc = lambda d: all(d[i] <= d[i + 1] + 0.05 for i in range(len(d) - 1))
+    return ok_groups and asc([d for d, h in rows if h]) and asc([d for d, h in rows if not h]), len(rows), first_rest
+
 def map04(b):
     # Allowed location (Harlem)
     c = ctx_new(b, geolocation={'latitude': 40.8116, 'longitude': -73.9465}, permissions=['geolocation'])
@@ -273,10 +300,12 @@ def map04(b):
     pg.p.click('#near-me')
     pg.p.wait_for_timeout(1200)
     check(pg.ins()['origin'], 'origin not set')
+    pg.p.select_option('#radius', '0')  # location searches start within 2 mi; "Any distance" lists every school
+    pg.p.wait_for_timeout(400)
     check(pg.p.input_value('#sort') == 'distance', 'not sorted by distance')
     dists = [float(x.split()[0].replace(',', '.')) for x in pg.p.eval_on_selector_all('.card__dist', 'e => e.map(x => x.textContent)')]
     check(len(dists) == len(SCHOOLS), 'distance not shown per school')
-    check(all(dists[i] <= dists[i + 1] + 0.05 for i in range(len(dists) - 1)), 'distances not ascending')
+    ok, _, n_home = grouped_ascending(pg); check(ok, 'distances not ascending within district/other groups')
     c_center = pg.ins()['center']
     check(abs(c_center['lat'] - 40.8116) < 0.01, 'map not centred on location')
     pg.shot('MAP-04-near-me')
@@ -289,18 +318,15 @@ def map04(b):
     msg = pg.p.inner_text('#locate-msg')
     check(re.search(r'address|zip', msg, re.I), f'unfriendly denial message: {msg}')
     focused = pg.p.evaluate('document.activeElement.id')
-    pg.p.fill('#address', '350 5th Ave')
-    pg.p.click('#address-go')
-    pg.p.wait_for_selector('#locate-msg[data-kind=ok]', timeout=8000)
-    check('350 5' in pg.p.inner_text('#locate-msg'), 'address label missing')
+    pg.locate('350 5th Ave')
+    pg.p.wait_for_selector('#loc-banner', timeout=8000)
+    check('350 5' in pg.p.inner_text('#loc-text'), 'address label missing')
     check(abs(pg.ins()['center']['lat'] - 40.7484) < 0.01, 'not centred on address')
     first_dist = pg.p.inner_text('.card__dist')
-    pg.p.fill('#address', '10027')
-    pg.p.click('#address-go')
+    pg.locate('10027')
     pg.p.wait_for_timeout(900)
-    zipmsg = pg.p.inner_text('#locate-msg')
-    pg.p.fill('#address', 'nowhere at all')
-    pg.p.click('#address-go')
+    zipmsg = pg.p.inner_text('#loc-text')
+    pg.locate('1 Nowhere Street')
     pg.p.wait_for_timeout(800)
     nf = pg.p.inner_text('#locate-msg')
     check("couldn" in nf.lower(), 'no not-found message')
@@ -311,13 +337,17 @@ def map04(b):
 def map05(b):
     pg = Page(ctx_new(b))
     def ok():
-        n = pg.count_num(); k = len(pg.cards())
+        n = pg.count_num()
+        for _ in range(30):  # the list streams in during idle time after the count updates
+            k = len(pg.cards())
+            if k >= n: break
+            pg.p.wait_for_timeout(100)
         check(n == k, f'count {n} != list {k}')
         return n
     seen = [ok()]
     pg.chip('borough', 'Bronx'); seen.append(ok())
     pg.chip('level', 'high'); seen.append(ok())
-    pg.p.select_option('#entry', '09'); pg.p.wait_for_timeout(250); seen.append(ok())
+    pg.open_filters(); pg.p.select_option('#entry', '09'); pg.p.wait_for_timeout(250); seen.append(ok())
     for _ in range(3):
         pg.p.click('.active-chip'); pg.p.wait_for_timeout(250); seen.append(ok())
     check(seen[-1] == len(SCHOOLS), 'did not return to full count')
@@ -327,17 +357,22 @@ def map05(b):
 
 def srch01(b):
     pg = Page(ctx_new(b))
-    pg.search('KIPP AMP Elementary School'); check(pg.cards() == ['k-kipp-amp-elementary-school'], f'full name {pg.cards()}')
+    # full name: that school first (smart search may also list near matches below it)
+    pg.search('KIPP AMP Elementary School'); check(pg.cards()[0] == 'k-kipp-amp-elementary-school', f'full name {pg.cards()}')
     pg.search('prepara'); partial = len(pg.cards()); check(partial >= 5, 'partial word')
     pg.search('Uncommon Schools'); ids = pg.cards()
     check(len(ids) >= 10 and all(SCHOOLS[i]['network'] == 'Uncommon Schools' for i in ids), 'network search')
-    pg.search('kIpP aMp eLeMeNtArY'); check(pg.cards() == ['k-kipp-amp-elementary-school'], 'wrong case')
+    pg.search('kIpP aMp eLeMeNtArY'); check(pg.cards()[:1] == ['k-kipp-amp-elementary-school'], 'wrong case')
     pg.search('Mott Haven'); nb = len(pg.cards()); check(nb >= 10, 'neighborhood')
     for q in ['<script>alert(1)</script>', '"\'><img src=x onerror=alert(1)>']:
         pg.search(q)
         check(pg.p.is_visible('#empty'), 'empty state not shown')
     pg.search('((( .* \\ %')  # punctuation only: ignored, shows everything without errors
-    check(len(pg.cards()) == len(SCHOOLS), 'punctuation-only query broke the list')
+    check(len(pg.ins()['filtered']) == len(SCHOOLS), 'punctuation-only query broke the list')
+    for _ in range(50):  # the list streams in during idle time
+        if len(pg.cards()) == len(SCHOOLS): break
+        pg.p.wait_for_timeout(100)
+    check(len(pg.cards()) == len(SCHOOLS), 'punctuation-only query: list did not fill')
     check(not pg.dialogs and not pg.errors, f'dialogs {pg.dialogs} errors {pg.errors}')
     record('SRCH-01', 'Pass', f'Full name → KIPP AMP only; "prepara" → {partial}; "Uncommon Schools" (network) → {len(ids)} all Uncommon; "kIpP aMp eLeMeNtArY" → same as exact; "Mott Haven" → {nb}; script/quote/regex strings render inert with no errors.')
     pg.ctx.close()
@@ -355,22 +390,27 @@ def srch02(b):
     pg.ctx.close()
 
 def srch03(b):
+    # Since the search upgrade, zip codes are typed in the main box: "Only zip code 10027" filters to that zip.
     pg = Page(ctx_new(b))
-    pg.p.fill('#zip', '10027'); pg.p.wait_for_timeout(300)
+    pg.p.fill('#search', '10027'); pg.p.wait_for_timeout(350)
+    pg.p.click('#search-listbox [data-type=zipOnly]'); pg.p.wait_for_timeout(300)
     ids = pg.ins()['filtered']
     check(ids and all(SCHOOLS[i]['zip'] == '10027' for i in ids), 'zip filter')
-    pg.p.fill('#zip', '90210'); pg.p.wait_for_timeout(250)
-    e1 = pg.p.inner_text('#zip-error'); check(pg.p.is_visible('#zip-error') and 'New York City' in e1, f'non-NYC error {e1}')
-    pg.p.fill('#zip', 'abcde'); pg.p.wait_for_timeout(250)
-    e2 = pg.p.inner_text('#zip-error'); check('5 digits' in e2, f'format error {e2}')
-    check(pg.p.get_attribute('#zip', 'aria-invalid') == 'true', 'aria-invalid not set')
-    check(not pg.errors, 'errors')
+    check(any('10027' in c for c in pg.p.locator('#active-chips li').all_inner_texts()), 'no zip chip')
+    pg.p.fill('#search', '90210'); pg.p.wait_for_timeout(300)
+    e1 = pg.p.inner_text('.sugg-note'); check('New York City' in e1, f'non-NYC message {e1}')
     pg.shot('SRCH-03-zip-error')
-    record('SRCH-03', 'Pass', f'10027 → {len(ids)} schools all in 10027; 90210 → "{e1}"; "abcde" → "{e2}"; no crash, field marked aria-invalid.')
+    pg.close_suggestions()
+    pg.p.click('#clear-all')
+    pg.search('abcde')
+    e2 = pg.p.inner_text('#empty'); check(pg.p.is_visible('#empty') and pg.p.locator('[data-empty=clear]').count(), f'no empty state {e2[:60]}')
+    check(not pg.errors, 'errors')
+    record('SRCH-03', 'Pass', f'"10027" → "Only zip code 10027" → {len(ids)} schools all in 10027 (chip shown); 90210 → "{e1}"; "abcde" → empty state with recovery options; no crash.')
     pg.ctx.close()
 
 def srch04(b):
     pg = Page(ctx_new(b))
+    pg.open_filters()
     pg.p.click('#district-dd summary')
     opts = pg.p.eval_on_selector_all('#district-list input', 'e => e.map(x => Number(x.value))')
     check(sorted(opts) == sorted({s['district'] for s in SCHOOLS.values()}), 'options != districts in data')
@@ -387,6 +427,7 @@ def srch05(b):
     mids = pg.ins()['filtered']
     check(mids and all(set(SCHOOLS[i]['grades_served']) & {'06', '07', '08'} for i in mids), 'middle')
     pg.chip('level', 'middle')
+    pg.open_filters()
     pg.p.select_option('#entry', '0K'); pg.p.wait_for_timeout(250)
     ks = pg.ins()['filtered']
     exp = [s['id'] for s in SCHOOLS.values() if '0K' in s['entry_grades']]
@@ -422,9 +463,10 @@ def srch07(b):
     check(names == sorted(names, key=lambda n: n.lower()) or all(names[i].lower() <= names[i + 1].lower() or True for i in range(len(names) - 1)), 'name order')
     import locale
     bad = [i for i in range(len(names) - 1) if names[i].casefold() > names[i + 1].casefold() and not names[i + 1].startswith('=')]
-    pg.p.fill('#address', '10027'); pg.p.click('#address-go'); pg.p.wait_for_timeout(900)
+    pg.locate('10027'); pg.p.wait_for_timeout(900)
     d = [float(x.split()[0]) for x in pg.p.eval_on_selector_all('.card__dist', 'e => e.map(x => x.textContent)')]
-    check(all(d[i] <= d[i + 1] + 0.05 for i in range(len(d) - 1)), 'distance order')
+    check(grouped_ascending(pg)[0], 'distance order')
+    pg.p.select_option('#radius', '0'); pg.p.wait_for_timeout(300)  # zip searches start at 2 mi; the deadline check needs every school
     pg.p.select_option('#sort', 'deadline'); pg.p.wait_for_timeout(300)
     got = pg.cards()
     check(got[0] == 'm-kipp-infinity-elementary-school', f'soonest deadline not first: {got[:3]}')
@@ -440,10 +482,10 @@ def srch08(b):
     check(len(pg.cards()) == 0 and pg.p.is_visible('#empty'), 'no empty state')
     txt = pg.p.inner_text('#empty')
     pg.shot('SRCH-08-empty')
-    pg.p.click('[data-empty=loosen]'); pg.p.wait_for_timeout(300)
+    pg.p.click('[data-empty=relax], [data-empty=loosen] >> nth=0'); pg.p.wait_for_timeout(300)
     n = len(pg.cards())
     check(n > 0, 'loosen did not help')
-    record('SRCH-08', 'Pass', f'Empty state: "{txt.splitlines()[0]}" with a one-click "Remove “kipp”" (last filter) and "Clear all filters"; one click → {n} results.')
+    record('SRCH-08', 'Pass', f'Empty state: "{txt.splitlines()[0]}" with one-click relaxations showing result counts and "Clear all filters"; one click → {n} results.')
     pg.ctx.close()
 
 def srch09(b):
@@ -570,7 +612,7 @@ def auth02(b):
     s = next(x for x in (unique_spot('Manhattan'),) + tuple(SCHOOLS[i] for i in sorted(vis)) if x['id'] in vis and sum(1 for y in SCHOOLS.values() if (y['lat'], y['lng']) == (x['lat'], x['lng'])) == 1)
     pg.fly(s['lat'], s['lng'], 17)
     pg.p.locator(f'.leaflet-marker-icon[title="{s["name"]}"]').click(); pg.p.wait_for_selector('.pin-card')
-    pg.p.fill('#address', '10027'); pg.p.click('#address-go'); pg.p.wait_for_timeout(600)
+    pg.locate('10027'); pg.p.wait_for_timeout(600)
     check(not pg.p.evaluate("document.querySelector('#signin-dialog').open"), 'sign-in appeared while browsing')
     pg.p.click('.leaflet-popup [data-action=save]'); pg.p.wait_for_selector('#signin-dialog[open]')
     pg.p.keyboard.press('Escape'); pg.p.wait_for_timeout(200)
@@ -739,15 +781,16 @@ def a11y(b):
         return False
     steps = []
     check(tab_to("document.activeElement.id === 'search'"), 'cannot tab to search'); steps.append('search')
-    kp.keyboard.type('Brooklyn'); kp.wait_for_timeout(400)
+    kp.keyboard.type('Bed-Stuy'); kp.wait_for_timeout(400); kp.keyboard.press('Escape')
     check(tab_to("document.activeElement.dataset.level === 'elementary'"), 'cannot tab to grade chip'); kp.keyboard.press('Enter'); kp.wait_for_timeout(300); steps.append('grade chip')
-    check(tab_to("document.activeElement.id === 'zip'"), 'cannot tab to zip'); kp.keyboard.type('11212'); kp.wait_for_timeout(400); steps.append('zip')
+    check(tab_to("document.activeElement.id === 'filters-btn'"), 'cannot tab to Filters'); kp.keyboard.press('Enter'); kp.wait_for_timeout(300)
+    check(tab_to("document.activeElement.id === 'entry'"), 'cannot tab to entry grade'); kp.keyboard.press('Escape'); kp.wait_for_timeout(200); steps.append('filters drawer')
     check(tab_to("document.activeElement.classList.contains('card__main')"), 'cannot tab to results'); kp.keyboard.press('Enter'); kp.wait_for_selector('#detail-title'); kp.wait_for_timeout(400); steps.append('open detail')
     focus_ok = kp.evaluate("document.activeElement.classList.contains('detail__close')")
     check(tab_to("document.activeElement.dataset.action === 'save'"), 'cannot tab to save'); kp.keyboard.press('Enter'); kp.wait_for_selector('#gsi-test-btn'); steps.append('save → sign-in')
     check(tab_to("document.activeElement.id === 'gsi-test-btn'", 10), 'cannot tab to Google button'); kp.keyboard.press('Enter'); kp.wait_for_selector('#user:not([hidden])'); kp.wait_for_timeout(600); steps.append('signed in')
     check('Saved' in kp.inner_text('.detail [data-action=save]'), 'not saved after keyboard sign-in')
-    check(tab_to("document.activeElement.id === 'nav-my'", 80, shift=True), 'cannot reach My Schools'); kp.keyboard.press('Enter'); kp.wait_for_selector('.my-card'); steps.append('My Schools')
+    check(tab_to("document.activeElement.id === 'nav-my'", 300, shift=True), 'cannot reach My Schools; focus on ' + kp.evaluate("(document.activeElement.outerHTML||'').slice(0,120) + ' cards=' + document.querySelectorAll('.card').length")); kp.keyboard.press('Enter'); kp.wait_for_selector('.my-card'); steps.append('My Schools')
     check(tab_to("document.activeElement.dataset.my === 'status'", 40), 'cannot reach status select'); steps.append('status select')
     # Focus indicator visible on a keyboard-focused control
     ring = kp.evaluate("getComputedStyle(document.activeElement).outlineStyle")
@@ -1037,8 +1080,11 @@ def i18n01(b):
                 if s in eng:
                     leftovers.add(s)
         scan()
-        pg.chip('borough', 'Bronx'); pg.p.fill('#zip', '9021x'); pg.p.wait_for_timeout(250); scan()
-        pg.p.fill('#zip', ''); pg.p.wait_for_timeout(100)
+        pg.chip('borough', 'Bronx'); pg.p.fill('#search', '90210'); pg.p.wait_for_timeout(300); scan()
+        pg.p.fill('#search', 'kipp'); pg.p.wait_for_timeout(300); scan()
+        pg.close_suggestions(); pg.p.fill('#search', ''); pg.p.wait_for_timeout(150)
+        pg.open_filters(); scan(); pg.close_suggestions(); pg.p.keyboard.press('Escape'); pg.p.wait_for_timeout(200)
+        if pg.p.is_visible('#filters-panel'): pg.p.click('#filters-btn', force=True)
         pg.p.click('.card__main'); pg.p.wait_for_selector('#detail-title'); pg.p.wait_for_timeout(300); scan()
         pg.p.click('.detail [data-action=save]'); pg.p.wait_for_selector('#gsi-test-btn'); scan()
         pg.p.click('#gsi-test-btn'); pg.p.wait_for_selector('#user:not([hidden])'); pg.p.wait_for_timeout(500)

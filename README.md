@@ -4,8 +4,9 @@ Find, evaluate and shortlist New York City charter schools on one interactive ma
 
 **What families can do**
 - **Map + list, always in sync.** All 436 NYC charter school campuses, clustered at city zoom. Click a pin for a preview card, click a list item to centre its pin.
-- **Search and filter in a few taps.** Name / network / neighborhood search, borough, grade level, entry grade, community school district and zip code, combined with removable chips and **Clear all**. Sort by name, distance or next deadline. Every view is a shareable URL.
-- **Near me / address search.** Distances from the device location or any NYC address or zip (via NYC Planning GeoSearch).
+- **One smart search box.** Type a school, network, neighborhood, zip code or street address. It understands nicknames ("SA", "KIP", "Bklyn", "Bed-Stuy"), typos and missing accents, ranks exact names first, highlights what matched, and suggests schools, networks and places as you type. Phrases like "kindergarten in Bushwick" become filters.
+- **Location that never comes back empty.** A zip, address or *Use my location* lists schools within 2 mi (1, 2, 5 mi or any), nearest first, shows your community school district and lists its schools first; if nothing is that close, the 5 nearest are shown.
+- **Filters without clutter.** Borough and grade chips up front; entry grade, district and map area under **Filters**, a bottom sheet on phones. Removable chips, **Clear all**, and when nothing matches, one-tap ways out with their counts ("Remove Staten Island (19)"). Every view is a shareable URL (locations are never put in it).
 - **Detail pages.** Overview, admissions (how to apply, eligibility, lottery preferences, key dates, apply link), contact (tap-to-call, email, website, directions), costs and extras, plus data source and last-verified date. Missing facts read **"Not available"**.
 - **Save with Google, only when needed.** Browsing never requires an account. **Save** or **My Schools** prompts Google sign-in, then returns you to the same school with the save completed.
 - **My Schools.** Shortlist on any device, application status (Researching → Accepted/Declined), private notes (2,000 characters), upcoming deadlines, a calendar file (.ics), a read-only share link, and side-by-side **Compare** (2–4 schools).
@@ -71,6 +72,9 @@ Any host that runs Docker or Node 22 works. Set `NODE_ENV=production`, `SESSION_
 
 ### Street map for the hosted demo
 The deployed app uses OpenStreetMap's free street tiles (no key needed) with an Esri satellite switch. The single-page demo (`demo/index.html`, for hosts that block outside map images) instead draws its own Google-style street map in the browser (`public/js/streets.js`) from `data/basemap/streets.json` (1.2 MB): 110,559 street segments from NYC Open Data *Centerline* (`inkn-q76z`) merged into 24,058 named lines, 3,308 parks from *Parks Properties* (`enfh-gkve`), 14 cemeteries from *2020 NTAs* (`9nt8-h7nd`) and the shoreline from *Borough Boundaries* (`gthc-hcne`), all pulled 2026-10-17. Highways are yellow from zoom 10, main roads white from 12, all streets from 14, and names show from 16. `npm run build-demo` rebuilds the data (`scripts/build-streets.js` formats names like "W 42nd St") and the page.
+
+## Search
+`public/js/search.js` (shared by the app and the Node tests, no dependencies) does the matching: accent and case folding, a nickname list (networks, boroughs, neighborhoods, Spanish level words, PS-number detection), ranked tiers (exact name → name word → network → neighborhood/borough/address → typo-only), typo tolerance only for words that match nothing literally, zip/address detection (offered as a suggestion, never applied silently), rule-based phrase parsing and "did you mean". Community school districts come from NYC Open Data's boundary file (`public/data/csd.json`, built by `scripts/build-csd.js`, which checks all 436 campuses land in their listed district); the lookup runs in the browser, so a family's location is never sent anywhere. The **Search upgrade eval matrix** (Claude Docs) tracks the 20 acceptance rows; `python3 eval/search.py` runs them.
 
 ## Security
 | Area | Implementation |
