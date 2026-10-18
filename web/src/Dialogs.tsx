@@ -124,7 +124,7 @@ export function SignInDialog() {
       <button type="button" className="btn btn--ghost btn--block" id="dev-login" hidden={!devLogin} onClick={doDevLogin}>{t('devLogin')}</button>
       <p className="alert alert--error" id="signin-error" role="alert" hidden={!error}>{error}</p>
       <p className="alert alert--info" id="signin-setup" hidden={!setup}>{t('signInSetup')}</p>
-      <p className="fine">{t('signInPrivacy')}</p>
+      <p className="fine">{t('signInPrivacy')} <a href="/privacy" target="_blank" rel="noopener">{t('privacyLink')}</a></p>
     </dialog>
   );
 }

@@ -54,6 +54,11 @@ class SessionStore {
     this.sessions.delete(id);
   }
 
+  /** Signs a user out everywhere (used when they delete their account). */
+  destroyUser(userId) {
+    for (const [id, s] of this.sessions) if (s.userId === userId) this.sessions.delete(id);
+  }
+
   prune() {
     const t = Date.now();
     for (const [id, s] of this.sessions) if (t - s.lastSeen > this.idleMs || t - s.createdAt > this.absoluteMs) this.sessions.delete(id);

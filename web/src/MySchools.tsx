@@ -127,6 +127,28 @@ function SharePanel() {
   );
 }
 
+function DeleteAccount() {
+  const app = useApp();
+  const [confirming, setConfirming] = useState(false);
+  const [busy, setBusy] = useState(false);
+  return (
+    <section className="danger-zone" aria-labelledby="del-title">
+      <h2 id="del-title">{t('deleteAccountTitle')}</h2>
+      <p>{t('deleteAccountBody')}</p>
+      {confirming ? (
+        <div className="danger-zone__row" role="group" aria-label={t('deleteAccountConfirm')}>
+          <strong>{t('deleteAccountConfirm')}</strong>
+          <button type="button" className="btn btn--danger btn--sm" id="delete-account-yes" disabled={busy}
+            onClick={async () => { setBusy(true); if (!(await app.deleteAccount())) setBusy(false); }}>{t('deleteAccountYes')}</button>
+          <button type="button" className="btn btn--ghost btn--sm" onClick={() => setConfirming(false)}>{t('cancelBtn')}</button>
+        </div>
+      ) : (
+        <button type="button" className="btn btn--ghost btn--sm" id="delete-account" onClick={() => setConfirming(true)}>{t('deleteAccountBtn')}</button>
+      )}
+    </section>
+  );
+}
+
 export function MySchools() {
   const app = useApp();
   const show = app.view === 'my';
@@ -194,6 +216,7 @@ export function MySchools() {
               <button type="button" className="btn btn--primary" data-my="explore" onClick={() => app.showExplore()}>{t('exploreSchools')}</button>
             </div>
           )}
+          <DeleteAccount />
         </div>
       ) : null}
     </section>

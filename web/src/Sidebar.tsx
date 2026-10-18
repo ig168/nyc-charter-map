@@ -414,6 +414,9 @@ export function Sidebar() {
       </div>
       <Results />
       <Empty />
+      <footer className="side-foot">
+        <a href="/about">{t('aboutLink')}</a> · <a href="/privacy">{t('privacyLink')}</a>
+      </footer>
     </aside>
   );
 }

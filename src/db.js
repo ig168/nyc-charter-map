@@ -316,6 +316,20 @@ class Store {
     return this.st('SELECT id, email, name, photo_url FROM users WHERE id = ?').get(id) || null;
   }
 
+  /** Erases a user and everything tied to them: profile, saved schools, notes, share link and analytics events. */
+  deleteUser(id) {
+    this.db.exec('BEGIN');
+    try {
+      this.st('DELETE FROM events WHERE user_id = ?').run(id);
+      const n = this.st('DELETE FROM users WHERE id = ?').run(id).changes; // saved_schools cascade
+      this.db.exec('COMMIT');
+      return n > 0;
+    } catch (e) {
+      this.db.exec('ROLLBACK');
+      throw e;
+    }
+  }
+
   // ---- Saved schools (always scoped to one user) --------------------------------
 
   listSaved(userId) {

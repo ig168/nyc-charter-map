@@ -131,6 +131,8 @@ function createApp(config, deps = {}) {
       res.writeHead(302, { Location: '/#signin', 'Cache-Control': 'no-store' });
       return res.end();
     }
+    if (isRead && pathname === '/about') return sendHtmlFile(req, res, path.join(VIEWS_DIR, 'about.html'));
+    if (isRead && pathname === '/privacy') return sendHtmlFile(req, res, path.join(VIEWS_DIR, 'privacy.html'));
     if (isRead && /^\/s\/[A-Za-z0-9_-]+$/.test(pathname)) return sendHtmlFile(req, res, path.join(VIEWS_DIR, 'share.html'));
 
     // ---- Auth ---------------------------------------------------------------------
@@ -194,6 +196,15 @@ function createApp(config, deps = {}) {
       if (isRead && pathname === '/api/me') {
         const u = currentUser(req);
         return sendJson(req, res, 200, { user: u ? publicUser(u) : null });
+      }
+      // Account deletion (privacy policy): erases the profile, saved schools, notes, share link and events
+      if (method === 'DELETE' && pathname === '/api/me') {
+        requireSameOrigin(req);
+        const user = requireUser(req);
+        store.deleteUser(user.id);
+        sessions.destroyUser(user.id);
+        appendCookie(res, serializeCookie(COOKIE_NAME, '', { ...cookieOpts, maxAge: 0 }));
+        return sendJson(req, res, 200, { ok: true });
       }
       if (isRead && pathname === '/api/schools') {
         const { meta, schools } = store.schoolSummaries();

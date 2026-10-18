@@ -384,6 +384,23 @@ export function App() {
     toast(t('signedOut'));
   }, [S, showExplore, toast]);
 
+  // ---- Account deletion (privacy policy) -----------------------------------------------------------
+  const deleteAccount = useCallback(async () => {
+    try {
+      await api('/api/me', { method: 'DELETE', body: {} });
+    } catch (e: any) {
+      toast(e.message, 'error');
+      return false;
+    }
+    setUser(null);
+    setSavedMap(new Map());
+    setShare(null);
+    setCompare(new Set());
+    showExplore();
+    toast(t('accountDeleted'));
+    return true;
+  }, [showExplore, toast]);
+
   // ---- Compare (CMP-01) ----------------------------------------------------------------------------
   const toggleCompare = useCallback(
     (id: string, checked: boolean) => {
@@ -597,7 +614,7 @@ export function App() {
     compare, details, filtered, highlightId, setHighlightId, locateMsg, setLocateMsg, searchText, setSearchText, zipText, setZipText,
     zipError, setZipError, signin, compareOpen, setCompareOpen, mobileView, fitToken, menuOpen, setMenuOpen, districtOpen, setDistrictOpen,
     mapApi, filterCtx, toast, updateFilters, removeFilter, clearAll, toggleSave, updateTracker, openDetail, closeDetail, retryDetail,
-    showMy, showExplore, openSignIn, afterSignIn, onSigninClosed, signOut, toggleCompare, setCompare, setOrigin, nearMe, searchAddress,
+    showMy, showExplore, openSignIn, afterSignIn, onSigninClosed, signOut, toggleCompare, setCompare, deleteAccount, setOrigin, nearMe, searchAddress,
     locateError, toggleLang, setMobile, getDetail, onMapMoved, chipList: () => chipList(filters), lang: lang(),
   };
 

@@ -175,3 +175,34 @@ test('MAP-04 geocode: NYC zips resolve locally; bad input gets a friendly error;
   const addr = await fake.get('/api/geocode?q=350%205th%20Ave');
   assert.equal(addr.json.result.kind, 'address');
 });
+
+test('PRIV-01 deleting an account erases profile, saved schools, notes, share link and events, everywhere', async () => {
+  const laptop = client(app.base);
+  const phone = client(app.base);
+  await laptop.devLogin('eraseme');
+  await phone.devLogin('eraseme');
+  await laptop.put('/api/saved/k-kipp-amp-elementary-school', { source: 'list' });
+  await laptop.patch('/api/saved/k-kipp-amp-elementary-school', { note: 'tour notes' });
+  const share = (await laptop.post('/api/share', {})).json.path;
+  const before = app.store.db.prepare("SELECT id FROM users WHERE google_sub = 'dev:eraseme'").get();
+  assert.ok(before, 'user exists');
+  assert.equal((await laptop.del('/api/me', {}, { sameOrigin: false })).status, 403, 'cross-site delete blocked');
+  assert.equal((await laptop.del('/api/me')).status, 200);
+  assert.equal(app.store.db.prepare('SELECT COUNT(*) n FROM users WHERE id = ?').get(before.id).n, 0);
+  assert.equal(app.store.db.prepare('SELECT COUNT(*) n FROM saved_schools WHERE user_id = ?').get(before.id).n, 0);
+  assert.equal(app.store.db.prepare('SELECT COUNT(*) n FROM events WHERE user_id = ?').get(before.id).n, 0);
+  assert.equal((await laptop.get('/api/me')).json.user, null, 'signed out here');
+  assert.equal((await phone.get('/api/saved')).status, 401, 'signed out on the other device too');
+  assert.equal((await client(app.base).get(`/api/share/${share.split('/').pop()}`)).status, 404, 'share link stops working');
+  assert.equal((await client(app.base).del('/api/me')).status, 401, 'needs sign-in');
+});
+
+test('About and Privacy pages are public', async () => {
+  const c = client(app.base);
+  const about = await c.get('/about');
+  assert.equal(about.status, 200);
+  assert.match(about.text, /organized/);
+  const privacy = await c.get('/privacy');
+  assert.equal(privacy.status, 200);
+  assert.match(privacy.text, /Delete my account and data/);
+});

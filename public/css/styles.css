@@ -391,3 +391,31 @@ a { color: var(--ink-2); }
 .ver__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; color: #1f4d38; }
 .ver__flag { color: #7a4b00; }
 .ver__flag::before { content: '⚠ '; }
+
+/* ---- About and Privacy pages ---------------------------------------------------------------- */
+.doc { line-height: 1.6; color: var(--text); }
+.doc h1 { font-size: clamp(26px, 4vw, 36px); line-height: 1.2; color: var(--ink); margin: 0 0 6px; }
+.doc h2 { font-size: 20px; color: var(--ink); margin: 32px 0 8px; }
+.doc h3 { font-size: 16px; margin: 20px 0 6px; }
+.doc p, .doc li { font-size: 16px; }
+.doc ul { padding-left: 22px; }
+.doc li { margin: 4px 0; }
+.doc a:not(.btn) { color: var(--focus); }
+.doc .btn { text-decoration: none; }
+.doc-hero { padding: 20px 0 8px; }
+.doc-eyebrow { margin: 0 0 8px; font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--brooklyn); }
+.doc-lead { font-size: 18px; color: var(--muted); max-width: 680px; }
+.doc-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.doc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 14px; margin: 28px 0 8px; }
+.doc-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow-sm); }
+.doc-card h2 { margin: 0 0 6px; font-size: 18px; }
+.doc-card p { margin: 0; font-size: 15px; color: var(--muted); }
+.doc-section { margin-top: 8px; }
+.doc-foot { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 14px; color: var(--muted); }
+.side-foot { padding: 14px 16px 18px; font-size: 13px; color: var(--muted); text-align: center; }
+.side-foot a { color: var(--muted); }
+.danger-zone { margin-top: 28px; padding: 16px 18px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.danger-zone h2 { margin: 0 0 4px; font-size: 16px; }
+.danger-zone p { margin: 0 0 10px; font-size: 14px; color: var(--muted); }
+.danger-zone__row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.btn--danger { background: var(--danger); color: #fff; border-color: var(--danger); }
