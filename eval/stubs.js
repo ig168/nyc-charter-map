@@ -27,6 +27,13 @@ http.createServer((req, res) => {
   if (u.pathname === '/geo') {
     const q = (u.searchParams.get('text') || '').toLowerCase();
     if (q.includes('nowhere')) return json({ features: [] });
+    // a few fixed places in different community school districts (search upgrade SX-08)
+    const PLACES = [
+      [/frederick douglass|125th|adam clayton/, [-73.9465, 40.8116], '2090 ADAM CLAYTON POWELL JR BOULEVARD, Manhattan, New York, NY, USA'], // CSD 5
+      [/bedford ave|williamsburg/, [-73.9573, 40.7144], '200 BEDFORD AVENUE, Brooklyn, New York, NY, USA'], // CSD 14
+      [/tottenville|hylan/, [-74.2405, 40.5115], '7000 HYLAN BOULEVARD, Staten Island, New York, NY, USA'], // CSD 31, few schools nearby
+    ];
+    for (const [re, c, label] of PLACES) if (re.test(q)) return json({ features: [{ geometry: { coordinates: c }, properties: { label } }] });
     return json({ features: [{ geometry: { coordinates: [-73.9857, 40.7484] }, properties: { label: '350 5 AVENUE, Manhattan, New York, NY, USA' } }] });
   }
   json({ error: 'not found' }, 404);

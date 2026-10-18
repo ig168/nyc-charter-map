@@ -41,6 +41,7 @@ export function MapView() {
   const app = useApp();
   const el = useRef<HTMLDivElement>(null);
   const [notice, setNotice] = useState<{ text: string; kind: string }>({ text: '', kind: '' });
+  const [areaPill, setAreaPill] = useState(false);
   // Leaflet lives outside React; this ref always holds the latest app state for its callbacks.
   const A = useRef(app);
   A.current = app;
@@ -180,6 +181,13 @@ export function MapView() {
     st.markerLayer = L.layerGroup().addTo(map);
     map.on('zoomend moveend', debounce(() => renderMarkers(), 40));
     map.on('moveend', debounce(() => A.current.onMapMoved(), 120));
+    // "Search this area": offered after the person pans the map themselves (SX-11)
+    let dragged = false;
+    map.on('dragstart', () => (dragged = true));
+    map.on('moveend', () => {
+      if (dragged && !A.current.filters.inView) setAreaPill(true);
+      dragged = false;
+    });
     map.on('popupclose', () => (st.openPopupId = null));
 
     // Buttons inside pin cards (popups are plain HTML, so one delegated listener handles them)
@@ -208,6 +216,9 @@ export function MapView() {
       if (!m) {
         m = L.marker([s.lat, s.lng], { icon: pinIcon(s), title: s.name, keyboard: true, riseOnHover: true });
         m.on('click', () => openPinCard(s.id));
+        // pin ↔ card linking (SX-11)
+        m.on('mouseover', () => A.current.setHoverId(s.id));
+        m.on('mouseout', () => A.current.setHoverId(null));
         m._ncsState = pinState(s);
         st.markers.set(s.id, m);
       } else if (m._ncsState !== pinState(s)) {
@@ -401,8 +412,21 @@ export function MapView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [app.lang]);
 
+  useEffect(() => {
+    if (app.filters.inView) setAreaPill(false);
+  }, [app.filters.inView]);
+
   return (
     <>
+      {areaPill ? (
+        <button type="button" className="area-pill" id="search-area" onClick={() => {
+          setAreaPill(false);
+          app.updateFilters('inView', (f: any) => (f.inView = true));
+        }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2.2" /><path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" /></svg>
+          {t('searchThisArea')}
+        </button>
+      ) : null}
       <div id="map" ref={el}></div>
       <div className="map-notice" id="map-notice" role="status" hidden={!notice.text} data-kind={notice.kind}>{notice.text}</div>
     </>

@@ -58,6 +58,10 @@ export interface Filters {
   zip: string;
   savedOnly: boolean;
   inView: boolean;
+  networks: Set<string>;
+  places: Set<string>;
+  /** miles from the chosen location; 0 = any distance */
+  radius: number;
 }
 
 export interface SavedItem {
@@ -76,6 +80,8 @@ export interface Origin {
   lat: number;
   lng: number;
   label: string;
+  /** community school district the location falls in, when known */
+  district?: number | null;
 }
 
 export type View = 'explore' | 'my';

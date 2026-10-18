@@ -3,6 +3,7 @@
 import coreModule from '../../public/js/core.js';
 import i18nModule from '../../public/js/i18n.js';
 import clusterModule from '../../public/js/cluster.js';
+import searchModule from '../../public/js/search.js';
 import type { Borough, SchoolSummary, Filters } from './types';
 
 // If the page already loaded these modules (the hosted demo does, for its offline API shim), share that
@@ -11,6 +12,7 @@ const pre: any = (window as any).NCS || {};
 export const core: any = pre.core || coreModule;
 export const i18n: any = pre.i18n || i18nModule;
 export const clusterLib: any = pre.cluster || clusterModule;
+export const searchLib: any = pre.search || searchModule;
 
 export const t = (k: string, v?: Record<string, unknown>): string => i18n.t(k, v);
 export const lang = (): 'en' | 'es' => i18n.lang();
@@ -138,19 +140,23 @@ export function track(name: string, props: Record<string, unknown>) {
 }
 
 // ---- Filters -----------------------------------------------------------------------------------
-export const FILTER_KEYS = ['q', 'boroughs', 'levels', 'entry', 'districts', 'zip', 'savedOnly', 'inView'] as const;
+export const FILTER_KEYS = ['q', 'boroughs', 'levels', 'entry', 'districts', 'zip', 'savedOnly', 'inView', 'networks', 'places', 'radius'] as const;
 export type FilterKey = (typeof FILTER_KEYS)[number];
 
 export function isActive(f: Filters, name: FilterKey) {
   return {
     q: !!f.q, boroughs: f.boroughs.size > 0, levels: f.levels.size > 0, entry: !!f.entry,
     districts: f.districts.size > 0, zip: !!f.zip, savedOnly: f.savedOnly, inView: f.inView,
+    networks: f.networks.size > 0, places: f.places.size > 0, radius: !!f.radius,
   }[name];
 }
-export const anyFilter = (f: Filters) => FILTER_KEYS.some((k) => isActive(f, k));
+export const anyFilter = (f: Filters) => FILTER_KEYS.some((k) => k !== 'radius' && isActive(f, k));
 export const cloneFilters = (f: Filters): Filters => ({
   ...f, boroughs: new Set(f.boroughs), levels: new Set(f.levels), districts: new Set(f.districts),
+  networks: new Set(f.networks), places: new Set(f.places),
 });
+/** Filters that live in the Filters drawer (counted on its button). */
+export const drawerCount = (f: Filters) => (f.entry ? 1 : 0) + f.districts.size + (f.inView ? 1 : 0);
 
 export function chipList(f: Filters) {
   const out: { key: FilterKey; value?: string; label: string }[] = [];
@@ -159,6 +165,8 @@ export function chipList(f: Filters) {
   for (const l of f.levels) out.push({ key: 'levels', value: l, label: levelName(l) });
   if (f.entry) out.push({ key: 'entry', label: t('entryChip', { g: gradeName(f.entry) }) });
   for (const d of [...f.districts].sort((a, b) => a - b)) out.push({ key: 'districts', value: String(d), label: t('districtN', { d }) });
+  for (const n of f.networks) out.push({ key: 'networks', value: n, label: n });
+  for (const p of f.places) out.push({ key: 'places', value: p, label: p });
   if (f.zip) out.push({ key: 'zip', label: t('zipChip', { z: f.zip }) });
   if (f.savedOnly) out.push({ key: 'savedOnly', label: t('savedOnly') });
   if (f.inView) out.push({ key: 'inView', label: t('inView') });
@@ -185,4 +193,39 @@ export function toCsvDownload(header: string[], rows: unknown[][], filename: str
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+// ---- Recent searches (this browser only; never addresses, zip codes or coordinates) ------------------
+export interface Recent { type: 'text' | 'school' | 'network' | 'place'; label: string; value: string }
+function ls(): Storage | null {
+  try {
+    return window.localStorage;
+  } catch {
+    return null;
+  }
+}
+export function getRecent(): Recent[] {
+  try {
+    const v = JSON.parse(ls()?.getItem('ncs_recent') || '[]');
+    return Array.isArray(v) ? v.filter((r) => r && typeof r.label === 'string' && typeof r.value === 'string').slice(0, 5) : [];
+  } catch {
+    return [];
+  }
+}
+export function addRecent(r: Recent) {
+  // privacy: anything that looks like a location is never stored
+  if (/\d{5}/.test(r.value) || searchLib.parse(r.value).address) return;
+  try {
+    const list = [r, ...getRecent().filter((x) => !(x.type === r.type && x.value === r.value))].slice(0, 5);
+    ls()?.setItem('ncs_recent', JSON.stringify(list));
+  } catch {
+    /* storage blocked */
+  }
+}
+export function clearRecent() {
+  try {
+    ls()?.removeItem('ncs_recent');
+  } catch {
+    /* storage blocked */
+  }
 }

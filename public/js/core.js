@@ -20,7 +20,7 @@
     [10001, 10282], [10301, 10314], [10451, 10475], [11004, 11005],
     [11101, 11109], [11201, 11256], [11351, 11436], [11691, 11697],
   ];
-  const SORTS = ['name', 'distance', 'deadline'];
+  const SORTS = ['name', 'distance', 'deadline', 'relevance'];
 
   function isNycZip(zip) {
     if (typeof zip !== 'string' || !/^\d{5}$/.test(zip)) return false;
@@ -79,7 +79,8 @@
   }
 
   function emptyFilters() {
-    return { q: '', boroughs: new Set(), levels: new Set(), entry: '', districts: new Set(), zip: '', savedOnly: false, inView: false };
+    return { q: '', boroughs: new Set(), levels: new Set(), entry: '', districts: new Set(), zip: '', savedOnly: false, inView: false,
+      networks: new Set(), places: new Set(), radius: 0 };
   }
 
   /**
@@ -92,17 +93,64 @@
     if (skip !== 'entry' && f.entry && !(s.entryGrades || []).includes(f.entry)) return false;
     if (skip !== 'districts' && f.districts.size && !f.districts.has(s.district)) return false;
     if (skip !== 'zip' && f.zip && s.zip !== f.zip) return false;
-    if (f.savedOnly && !(ctx.saved && ctx.saved.has(s.id))) return false;
-    if (f.inView && ctx.inBounds && !ctx.inBounds(s)) return false;
+    if (skip !== 'savedOnly' && f.savedOnly && !(ctx.saved && ctx.saved.has(s.id))) return false;
+    if (skip !== 'inView' && f.inView && ctx.inBounds && !ctx.inBounds(s)) return false;
+    if (skip !== 'networks' && f.networks && f.networks.size && !f.networks.has(s.network)) return false;
+    if (skip !== 'places' && f.places && f.places.size && !placeMatch(s, f.places)) return false;
+    if (skip !== 'radius' && f.radius && ctx.origin && distanceKm(ctx.origin, s) * 0.621371 > f.radius) return false;
     if (skip !== 'q' && f.q) {
-      const idx = s._idx || (s._idx = searchIndex(s));
-      for (const term of queryTerms(f.q)) if (!idx.includes(term)) return false;
+      if (ctx.rank) {
+        // smart search (search.js): ranked, alias- and typo-aware; location-like text never filters
+        const p = ctx.rank.parsed;
+        if (!(p.address || (p.zip && !p.groups.some((g) => !g.zip) && !p.entry && !p.levels.size)) && !ctx.rank.hits.has(s.id)) return false;
+        if (p.psNumber) return false;
+      } else {
+        const idx = s._idx || (s._idx = searchIndex(s));
+        for (const term of queryTerms(f.q)) if (!idx.includes(term)) return false;
+      }
     }
     return true;
   }
 
+  /** Neighborhood filter: "Bushwick" matches "Bushwick (East)" and "Bushwick (West)". */
+  function placeMatch(s, places) {
+    const hood = normalize(s.neighborhood);
+    for (const p of places) {
+      const k = normalize(p);
+      if (hood === k || ` ${hood} `.includes(` ${k} `)) return true;
+    }
+    return false;
+  }
+
   function filterSchools(list, f, ctx) {
     return list.filter((s) => matches(s, f, ctx));
+  }
+
+  /**
+   * Zero-result recovery: for each active filter, how many schools would show without it.
+   * Returns [{key, value, count}] (value set for multi-value filters), most results first.
+   */
+  function relaxations(list, f, ctx) {
+    const out = [];
+    const tryWithout = (key, value, mutate) => {
+      const g = { ...f, boroughs: new Set(f.boroughs), levels: new Set(f.levels), districts: new Set(f.districts),
+        networks: new Set(f.networks || []), places: new Set(f.places || []) };
+      mutate(g);
+      const count = list.filter((s) => matches(s, g, ctx)).length;
+      if (count) out.push({ key, value, count });
+    };
+    if (f.q) tryWithout('q', undefined, (g) => (g.q = ''));
+    for (const b of f.boroughs) tryWithout('boroughs', b, (g) => g.boroughs.delete(b));
+    for (const l of f.levels) tryWithout('levels', l, (g) => g.levels.delete(l));
+    if (f.entry) tryWithout('entry', undefined, (g) => (g.entry = ''));
+    for (const d of f.districts) tryWithout('districts', String(d), (g) => g.districts.delete(d));
+    for (const n of f.networks || []) tryWithout('networks', n, (g) => g.networks.delete(n));
+    for (const p of f.places || []) tryWithout('places', p, (g) => g.places.delete(p));
+    if (f.zip) tryWithout('zip', undefined, (g) => (g.zip = ''));
+    if (f.savedOnly) tryWithout('savedOnly', undefined, (g) => (g.savedOnly = false));
+    if (f.inView) tryWithout('inView', undefined, (g) => (g.inView = false));
+    if (f.radius && ctx.origin) tryWithout('radius', undefined, (g) => (g.radius = 0));
+    return out.sort((a, b) => b.count - a.count);
   }
 
   function distanceKm(a, b) {
@@ -125,12 +173,18 @@
     return s.deadline && s.deadline >= today ? s.deadline : null;
   }
 
-  function sortSchools(list, sort, { origin = null, today = new Date().toISOString().slice(0, 10) } = {}) {
+  function sortSchools(list, sort, { origin = null, today = new Date().toISOString().slice(0, 10), rank = null, compare = null, district = null } = {}) {
     const byName = (a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }) || a.id.localeCompare(b.id);
     const out = list.slice();
+    if (sort === 'relevance' && rank && compare) {
+      const cmp = compare(rank);
+      return out.sort((a, b) => (rank.hits.has(a.id) && rank.hits.has(b.id) ? cmp(a, b) : byName(a, b)));
+    }
     if (sort === 'distance' && origin) {
       const d = new Map(out.map((s) => [s.id, distanceKm(origin, s)]));
-      return out.sort((a, b) => d.get(a.id) - d.get(b.id) || byName(a, b));
+      // the family's own community school district first (charter lotteries favor district residents)
+      const home = (s) => (district && s.district === district ? 0 : 1);
+      return out.sort((a, b) => home(a) - home(b) || d.get(a.id) - d.get(b.id) || byName(a, b));
     }
     if (sort === 'deadline') {
       return out.sort((a, b) => {
@@ -174,6 +228,6 @@
   return {
     GRADES, LEVELS, LEVEL_IDS, BOROUGHS, SORTS,
     isNycZip, zipProblem, levelsOf, gradeName, gradeLabel, normalize, searchIndex, queryTerms,
-    emptyFilters, matches, filterSchools, distanceKm, formatMiles, sortSchools, deadlineList, daysUntil, toCsv,
+    emptyFilters, matches, filterSchools, relaxations, placeMatch, distanceKm, formatMiles, sortSchools, deadlineList, daysUntil, toCsv,
   };
 });
