@@ -1,9 +1,10 @@
 import React, { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { Filters, Origin, Pending, SavedItem, SchoolDetail, SchoolSummary, User, View } from './types';
 import {
-  anyFilter, api, chipList, cloneFilters, COMPARE_MAX, core, FilterKey, i18n, isActive, lang, localToday, MOBILE, searchLib, ssGet, ssSet, t, track,
+  anyFilter, api, chipList, cloneFilters, COMPARE_MAX, core, FilterKey, i18n, isActive, lang, localToday, MOBILE, searchLib, searchTextStore, ssGet, ssSet, t, track,
 } from './lib';
 import { districtAt } from './district';
+import { setHighlightEngine } from './SearchBox';
 import { TopBar } from './TopBar';
 import { Sidebar } from './Sidebar';
 import { MapView, MapApi } from './MapView';
@@ -48,7 +49,7 @@ export function App() {
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [notice, setNotice] = useState<{ text: string; undo?: () => void } | null>(null);
   const [locateMsg, setLocateMsg] = useState<{ text: string; kind: '' | 'error' | 'ok'; clearable?: boolean }>({ text: '', kind: '' });
-  const [searchText, setSearchText] = useState('');
+  const setSearchText = searchTextStore.set;
   const [zipText, setZipText] = useState('');
   const [zipError, setZipError] = useState('');
   const [toastState, setToastState] = useState<{ msg: string; kind: string } | null>(null);
@@ -69,7 +70,11 @@ export function App() {
   }, []);
 
   // ---- Filtering (SRCH-01..09, MAP-03) and smart search (search upgrade SX-01..SX-08) -------------------
-  const search = useMemo(() => searchLib.createSearch(schools), [schools]);
+  const search = useMemo(() => {
+    const e = searchLib.createSearch(schools);
+    setHighlightEngine(e);
+    return e;
+  }, [schools]);
   const rank = useMemo(() => (filters.q ? search.rank(filters.q) : null), [search, filters.q]);
   const searchRef = useLatest(search);
   const filterCtx = useMemo(
@@ -93,11 +98,27 @@ export function App() {
     }
     const effSort = sort === 'distance' && !origin ? 'name' : sort === 'relevance' && !rank ? 'name' : sort;
     const sorted = fallback ? list : (core.sortSchools(list, effSort, { origin, today: localToday(), rank, compare: search.compare, district: origin?.district }) as SchoolSummary[]);
+    (window as any).__lastFilterMs = performance.now() - filterStart.current; // filter + rank + sort only
     return { filtered: sorted, nearest: fallback };
   }, [schools, filters, filterCtx, sort, origin, rank, search]);
   useEffect(() => {
-    (window as any).__lastFilterMs = performance.now() - filterStart.current;
+    (window as any).__lastRenderMs = performance.now() - filterStart.current; // through commit
   }, [filtered]);
+  // Warm the search engine while idle so the first keystroke isn't the one paying for JIT and caches
+  useEffect(() => {
+    if (!schools.length) return;
+    const ric: any = (window as any).requestIdleCallback || ((f: () => void) => setTimeout(f, 200));
+    // one small step per idle slot, so a keystroke never waits behind the warm-up
+    const steps = [() => search.rank('k'), () => search.suggest('k', { limit: 8 }), () => search.rank('harlem'), () => search.suggest('success acad', { limit: 8 }), () => search.didYouMean('harlemvilage')];
+    let alive = true;
+    const next = () => {
+      if (!alive || !steps.length) return;
+      try { steps.shift()!(); } catch { /* warm-up only */ }
+      ric(next, { timeout: 2000 });
+    };
+    ric(next, { timeout: 2000 });
+    return () => { alive = false; };
+  }, [search, schools.length]);
 
   const noteFilter = useCallback((name: FilterKey, f: Filters) => {
     setFilterOrder((o) => {
@@ -665,7 +686,7 @@ export function App() {
 
   const app = {
     schools, byId, loaded, loadError, user, saved, share, setShare, filters, filterOrder, sort, setSort, origin, selectedId, view,
-    compare, details, filtered, nearest, search, rank, hoverId, setHoverId, notice, setNotice, setFilters, highlightId, setHighlightId, locateMsg, setLocateMsg, searchText, setSearchText, zipText, setZipText,
+    compare, details, filtered, nearest, search, rank, hoverId, setHoverId, notice, setNotice, setFilters, highlightId, setHighlightId, locateMsg, setLocateMsg, setSearchText, zipText, setZipText,
     zipError, setZipError, signin, compareOpen, setCompareOpen, mobileView, fitToken, menuOpen, setMenuOpen, districtOpen, setDistrictOpen,
     mapApi, filterCtx, toast, updateFilters, removeFilter, clearAll, toggleSave, updateTracker, openDetail, closeDetail, retryDetail,
     showMy, showExplore, openSignIn, afterSignIn, onSigninClosed, signOut, toggleCompare, setCompare, deleteAccount, setOrigin, nearMe, searchAddress,

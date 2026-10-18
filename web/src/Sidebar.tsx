@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, startTransition, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useApp } from './App';
 import type { Filters as FiltersT, Origin, SchoolSummary } from './types';
@@ -341,23 +341,38 @@ const SchoolCard = memo(function SchoolCard({ s, saved, compared, selected, high
 // First screenful renders in the same frame as the filter change; the rest fills in during idle time,
 // so every result is in the page (screen readers, find-in-page) without slowing the click (PERF-01).
 const FIRST = 40;
-const CHUNK = 120;
+const IDLE_MAX = Infinity; // every result ends up in the DOM (find-in-page, screen-reader browsing); growth is idle-time and interruptible
+const CHUNK = 30; // small enough that each idle chunk stays well under a frame budget on slow phones
 
 function Results() {
   const app = useApp();
-  const { filtered, saved, compare, selectedId, highlightId, hoverId, origin } = app as { filtered: SchoolSummary[] } & any;
+  const { saved, compare, selectedId, highlightId, hoverId, origin } = app as any;
+  const filtered: SchoolSummary[] = useDeferredValue(app.filtered); // cards render after the urgent chip/count update
   const [limit, setLimit] = useState(FIRST);
   const listRef = useRef(filtered);
   if (listRef.current !== filtered) {
     listRef.current = filtered;
     if (limit !== FIRST) setLimit(FIRST);
   }
+  // Grow the list in idle time up to IDLE_MAX cards; past that, only as the reader scrolls near the end.
+  // Keeps the DOM small so every filter change or keystroke has little to tear down (SXP-01 / PERF-01).
+  const sentinel = useRef<HTMLLIElement>(null);
   useEffect(() => {
     if (limit >= filtered.length) return;
-    const ric: any = (window as any).requestIdleCallback || ((cb: () => void) => setTimeout(cb, 16));
-    const cic: any = (window as any).cancelIdleCallback || clearTimeout;
-    const h = ric(() => setLimit((n: number) => n + CHUNK), { timeout: 60 });
-    return () => cic(h);
+    if (limit < IDLE_MAX) {
+      const ric: any = (window as any).requestIdleCallback || ((cb: () => void) => setTimeout(cb, 16));
+      const cic: any = (window as any).cancelIdleCallback || clearTimeout;
+      const h = ric(() => startTransition(() => setLimit((n: number) => Math.min(n + CHUNK, IDLE_MAX))), { timeout: 60 }); // interruptible by typing
+      return () => cic(h);
+    }
+    const el = sentinel.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setLimit(filtered.length);
+      return;
+    }
+    const io = new IntersectionObserver((es) => es.some((e) => e.isIntersecting) && startTransition(() => setLimit((n: number) => n + CHUNK)), { rootMargin: '1200px 0px' });
+    io.observe(el);
+    return () => io.disconnect();
   }, [limit, filtered]);
 
   const handlers = useMemo(
@@ -398,6 +413,7 @@ function Results() {
         <SchoolCard key={s.id} s={s} saved={saved.has(s.id)} compared={compare.has(s.id)} selected={s.id === selectedId} highlight={s.id === highlightId}
           hover={s.id === hoverId} origin={origin} lng={app.lang} q={q} homeDistrict={!!homeD && s.district === homeD} {...handlers} />
       ))}
+      {shown.length < filtered.length ? <li ref={sentinel} className="results__more" aria-hidden="true"></li> : null}
     </ul>
   );
 }

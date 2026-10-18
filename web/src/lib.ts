@@ -56,9 +56,21 @@ export function debounce<A extends unknown[]>(fn: (...a: A) => void, ms: number)
     h = setTimeout(() => fn(...a), ms);
   };
 }
-export const fmtNum = (n: number) => Number(n).toLocaleString(lang() === 'es' ? 'es-US' : 'en-US');
-export const fmtDate = (iso: string) =>
-  new Date(`${iso}T12:00:00`).toLocaleDateString(lang() === 'es' ? 'es-US' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+// Intl formatters are expensive to create (toLocale*String builds one per call), so keep one per language.
+const numFmt: Record<string, Intl.NumberFormat> = {};
+const dateFmt: Record<string, Intl.DateTimeFormat> = {};
+const dateStr = new Map<string, string>();
+const loc = () => (lang() === 'es' ? 'es-US' : 'en-US');
+export const fmtNum = (n: number) => (numFmt[loc()] ||= new Intl.NumberFormat(loc())).format(Number(n));
+export const fmtDate = (iso: string) => {
+  const k = `${loc()}|${iso}`;
+  let v = dateStr.get(k);
+  if (v === undefined) {
+    v = (dateFmt[loc()] ||= new Intl.DateTimeFormat(loc(), { month: 'long', day: 'numeric', year: 'numeric' })).format(new Date(`${iso}T12:00:00`));
+    dateStr.set(k, v);
+  }
+  return v;
+};
 export const gradeLabel = (g: string[]) => core.gradeLabel(g, lang());
 export const gradeName = (g: string) => core.gradeName(g, lang());
 export const boroughName = (b: string) => t(`boro_${BKEY[b] || 'other'}`);
@@ -229,3 +241,21 @@ export function clearRecent() {
     /* storage blocked */
   }
 }
+
+// ---- Search-box text store ----------------------------------------------------------------------
+// The text being typed lives outside React context so a keystroke re-renders only the search box,
+// not every component that reads the app context (SXP-01). Filters update separately, debounced.
+let boxText = '';
+const boxSubs = new Set<() => void>();
+export const searchTextStore = {
+  get: () => boxText,
+  set: (v: string) => {
+    if (v === boxText) return;
+    boxText = v;
+    boxSubs.forEach((f) => f());
+  },
+  subscribe: (f: () => void) => {
+    boxSubs.add(f);
+    return () => boxSubs.delete(f);
+  },
+};

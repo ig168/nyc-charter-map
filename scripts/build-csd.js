@@ -19,7 +19,9 @@ const decode = (flat) => {
   return ring;
 };
 const districts = raw.map(([d, polys]) => ({ d, polys: polys.map((poly) => poly.map(decode)) }));
-const out = { source: 'NYC Open Data, School Districts (8ugf-3d8u), simplified to about 25 m', districts };
+// Coordinates are stored as integers in units of 1e-4 degrees (about 10 m): same precision, ~12% smaller file
+const scaled = districts.map((x) => ({ d: x.d, polys: x.polys.map((poly) => poly.map((ring) => ring.map(([lng, lat]) => [Math.round(lng * 1e4), Math.round(lat * 1e4)]))) }));
+const out = { source: 'NYC Open Data, School Districts (8ugf-3d8u), simplified to about 25 m', scale: 1e4, districts: scaled };
 fs.writeFileSync(path.join(ROOT, 'public/data/csd.json'), JSON.stringify(out));
 
 // --- validate against the seed's district for each campus

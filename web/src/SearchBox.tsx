@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { startTransition, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { useApp } from './App';
 import type { SchoolSummary } from './types';
-import { addRecent, boroughName, clearRecent, core, debounce, fmtNum, getRecent, gradeLabel, gradeName, levelName, MOBILE, Recent, t } from './lib';
+import { searchTextStore, addRecent, boroughName, clearRecent, core, debounce, fmtNum, getRecent, gradeLabel, gradeName, levelName, MOBILE, Recent, t } from './lib';
 
 // One smart box (search upgrade SX-06, SX-09, SX-14): names, networks, neighborhoods, zip codes and
 // addresses, with a short grouped suggestion list built on the W3C APG combobox pattern.
@@ -33,12 +33,15 @@ const Icon = ({ k }: { k: string }) => {
 };
 
 /** Name with the matched words marked (SX-04). */
-export function Marked({ name, q }: { name: string; q: string }) {
-  const app = useApp();
-  if (!q) return <>{name}</>;
-  const segs = app.search.highlight(name, q) as { text: string; mark: boolean }[];
+// The engine is read from a module slot, not context: a context read would re-render every
+// card's name on each keystroke even though the cards themselves are memoized (SXP-01).
+let engine: any = null;
+export const setHighlightEngine = (e: any) => { engine = e; };
+export const Marked = React.memo(function Marked({ name, q }: { name: string; q: string }) {
+  if (!q || !engine) return <>{name}</>;
+  const segs = engine.highlight(name, q) as { text: string; mark: boolean }[];
   return <>{segs.map((x, i) => (x.mark ? <mark key={i}>{x.text}</mark> : <React.Fragment key={i}>{x.text}</React.Fragment>))}</>;
-}
+});
 
 export function SearchBox() {
   const app = useApp();
@@ -46,11 +49,11 @@ export function SearchBox() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
   const [recentVer, setRecentVer] = useState(0);
-  const text: string = app.searchText;
+  const text: string = useSyncExternalStore(searchTextStore.subscribe, searchTextStore.get);
   const limit = MOBILE.matches ? 6 : 8;
 
   const applySearch = useMemo(
-    () => debounce((v: string) => app.updateFilters('q', (f: any) => (f.q = v.trim().slice(0, 100))), 120),
+    () => debounce((v: string) => startTransition(() => app.updateFilters('q', (f: any) => (f.q = v.trim().slice(0, 100)))), 120), // list work yields to the next keystroke
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [app.updateFilters],
   );

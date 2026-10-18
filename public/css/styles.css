@@ -486,3 +486,4 @@ mark { background: #fde9b5; color: inherit; border-radius: 2px; padding: 0 1px; 
   .area-pill { top: 10px; }
 }
 .sheet-open .view-switch { display: none !important; }
+.results__more { height: 1px; list-style: none; }

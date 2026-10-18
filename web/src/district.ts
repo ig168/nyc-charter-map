@@ -11,9 +11,11 @@ function load(): Promise<DistrictShape[] | null> {
   if (!shapes) {
     const pre = (window as any).NCS_CSD; // the hosted demo embeds the file
     shapes = (pre ? Promise.resolve(pre) : fetch('/data/csd.json', { credentials: 'omit' }).then((r) => (r.ok ? r.json() : null)))
-      .then((data: { districts: { d: number; polys: Ring[][] }[] } | null) => {
+      .then((data: { scale?: number; districts: { d: number; polys: Ring[][] }[] } | null) => {
         if (!data || !Array.isArray(data.districts)) return null;
-        return data.districts.map((x) => {
+        const k = data.scale || 1; // integer coordinates in 1/scale degrees
+        return data.districts.map((raw) => {
+          const x = k === 1 ? raw : { d: raw.d, polys: raw.polys.map((poly) => poly.map((ring) => ring.map(([a, b]) => [a / k, b / k] as [number, number]))) };
           let a = Infinity, b = Infinity, c = -Infinity, e = -Infinity;
           for (const poly of x.polys) for (const [lng, lat] of poly[0]) {
             a = Math.min(a, lng); b = Math.min(b, lat); c = Math.max(c, lng); e = Math.max(e, lat);

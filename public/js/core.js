@@ -6,6 +6,7 @@
   else (root.NCS = root.NCS || {}).core = api;
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
+  const NAME_COLLATOR = new Intl.Collator('en', { sensitivity: 'base' }); // one collator: localeCompare with options builds one per call
 
   const GRADES = ['PK', '0K', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
   const LEVELS = {
@@ -102,6 +103,7 @@
       if (ctx.rank) {
         // smart search (search.js): ranked, alias- and typo-aware; location-like text never filters
         const p = ctx.rank.parsed;
+        if (p.empty || (!p.groups.length && !p.levels.size && !p.entry && !(p.places || []).length && !p.zip && !p.psNumber)) return true; // punctuation / stop words only
         if (!(p.address || (p.zip && !p.groups.some((g) => !g.zip) && !p.entry && !p.levels.size)) && !ctx.rank.hits.has(s.id)) return false;
         if (p.psNumber) return false;
       } else {
@@ -174,7 +176,7 @@
   }
 
   function sortSchools(list, sort, { origin = null, today = new Date().toISOString().slice(0, 10), rank = null, compare = null, district = null } = {}) {
-    const byName = (a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }) || a.id.localeCompare(b.id);
+    const byName = (a, b) => NAME_COLLATOR.compare(a.name, b.name) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
     const out = list.slice();
     if (sort === 'relevance' && rank && compare) {
       const cmp = compare(rank);

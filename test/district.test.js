@@ -5,7 +5,9 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const data = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'public', 'data', 'csd.json'), 'utf8'));
+const raw = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'public', 'data', 'csd.json'), 'utf8'));
+const k = raw.scale || 1;
+const data = { districts: raw.districts.map((x) => ({ d: x.d, polys: x.polys.map((p) => p.map((r) => r.map(([a, b]) => [a / k, b / k]))) })) };
 const seed = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'seed', 'schools.json'), 'utf8')).schools;
 const inRing = (lng, lat, ring) => {
   let inside = false;

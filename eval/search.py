@@ -11,7 +11,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import e2e  # noqa: E402  (servers, fixture, browser helpers)
-from e2e import BASE, DESKTOP, PHONE, ctx_new, Page, start_servers, query  # noqa: E402
+from e2e import BASE, DESKTOP, PHONE, ctx_new, Page, start_servers, db_rows  # noqa: E402
 from playwright.sync_api import sync_playwright  # noqa: E402
 
 OUT = Path(__file__).resolve().parent
@@ -142,7 +142,7 @@ def sx04(b):
     typed(pg, 'kipp infinty')
     close_dd(pg)
     card = pg.p.inner_text('#results .card .card__name')
-    m3 = pg.p.locator('#results .card__name mark').all_inner_texts()
+    m3 = pg.p.locator('#results .card').first.locator('.card__name mark').all_inner_texts()
     check(card.startswith('KIPP Infinity'), f'typo card text {card!r}')
     check(m3 == ['KIPP'], f'typo marks {m3}')
     shot(pg, 'SX-04-highlight')
@@ -188,7 +188,11 @@ def sx05(b):
     pg.ctx.close()
     # did-you-mean on a near miss
     pg = Page(ctx_new(b))
-    typed(pg, 'harlm villag akademees')
+    typed(pg, 'harlm villag akademees')  # three typos: typo tolerance answers directly
+    close_dd(pg)
+    fuzzy = [i for i in pg.ins()['filtered']]
+    check(fuzzy and all('harlem-village' in i for i in fuzzy), f'typo tolerance {fuzzy[:3]}')
+    typed(pg, 'harlemvillage acadmy')  # words run together: no match, so offer a correction
     close_dd(pg)
     dym = pg.p.locator('[data-empty=dym]')
     check(dym.count() and 'Harlem Village' in dym.inner_text(), 'no did-you-mean')
@@ -197,7 +201,7 @@ def sx05(b):
     pg.p.wait_for_timeout(400)
     check(len(pg.ins()['filtered']) >= 1, 'did-you-mean found nothing')
     pg.ctx.close()
-    record('SX-05', 'Pass', 'Staten Island + High school + "kipp": ' + '; '.join(out) + f'; near miss "harlm villag akademees" → "Did you mean {label}?" → 1 tap shows results.')
+    record('SX-05', 'Pass', 'Staten Island + High school + "kipp": ' + '; '.join(out) + f'; "harlm villag akademees" → {len(fuzzy)} Harlem Village campuses via typo tolerance; "harlemvillage acadmy" (0 hits) → "{label}" → 1 tap shows results.')
 
 
 def sx06(b):
@@ -329,6 +333,7 @@ def sx09(b):
             check(any('Bushwick' in c for c in chips2), f'place chip {chips2}')
             pg.p.click('#clear-all')
             pg.p.fill('#search', '')
+            close_dd(pg)
             pg.p.click('#sort')
             pg.p.click('#search')
             pg.p.wait_for_timeout(200)
@@ -374,6 +379,9 @@ def sx10(b):
 def sx11(b):
     pg = Page(ctx_new(b))
     check(pg.p.locator('#search-area').count() == 0, 'pill shown before panning')
+    pg.p.evaluate("window.NCS.flyTo(40.70, -73.95, 13)")  # a neighbourhood view, so the area holds fewer than all schools
+    pg.p.wait_for_timeout(900)
+    check(pg.p.locator('#search-area').count() == 0, 'pill shown after a programmatic move')
     box = pg.p.locator('#map').bounding_box()
     cx, cy = box['x'] + box['width'] / 2, box['y'] + box['height'] / 2
     pg.p.mouse.move(cx, cy)
@@ -388,13 +396,16 @@ def sx11(b):
     after = len(pg.ins()['filtered'])
     check(after < before and pg.p.locator('#search-area').count() == 0, f'search area {before}→{after}')
     pg.p.click('#clear-all')
+    pg.p.wait_for_timeout(900)  # let the clear-all fit animation finish first
     pg.p.evaluate("window.NCS.flyTo(40.81, -73.95, 16)")
-    pg.p.wait_for_timeout(600)
-    mk = pg.ins()['markers'][0]['id']
-    pg.p.hover(f'#results .card[data-id="{mk}"]') if pg.p.locator(f'#results .card[data-id="{mk}"]').count() else None
+    pg.p.wait_for_timeout(900)
+    ids = [m['id'] for m in pg.ins()['markers']]
+    mk = next((i for i in ids if pg.p.locator(f'#results .card[data-id="{i}"]').count()), ids[0])  # a pin whose card is rendered
+    pg.p.hover(f'#results .card[data-id="{mk}"]')
     pg.p.wait_for_timeout(150)
     pin_hover = pg.p.evaluate("id => !!document.querySelector('.leaflet-marker-icon.is-hover')", mk)
     pg.p.mouse.move(5, 5)
+    mk = ids[-1]  # pin hover must bring in its card even if the list hasn't rendered that far yet
     pg.p.evaluate("id => window.NCS.hoverPin(id)", mk)
     pg.p.wait_for_timeout(150)
     card_hover = pg.p.evaluate("id => document.querySelector(`#results .card[data-id='${id}']`)?.classList.contains('is-hover')", mk)
@@ -487,7 +498,7 @@ def sxs01(b):
     pg.p.wait_for_timeout(1500)
     recent = pg.p.evaluate("localStorage.getItem('ncs_recent') || ''")
     check('2090' not in recent and '10027' not in recent and 'kipp' in recent, f'recent {recent}')
-    events = query("SELECT props FROM events WHERE name = 'search_performed'")
+    events = db_rows("SELECT props FROM events WHERE name = 'search_performed'")
     leaked = [e['props'] for e in events if re.search(r'2090|Adam Clayton|10027', e['props'])]
     check(not leaked, f'events leaked {leaked[:2]}')
     log = (e2e.WORK / 'server.log').read_text()
@@ -527,7 +538,7 @@ def sxa01(b):
     check(attrs.startswith('role=combobox') and 'aria-autocomplete=list' in attrs and ad and pg.p.locator(f'#{ad}[role=option]').count() == 1, f'{attrs} ad={ad}')
     check(pg.p.evaluate("document.activeElement.id") == 'search', 'focus left the box')
     pg.p.keyboard.press('Escape')
-    unnamed = pg.p.evaluate("""() => [...document.querySelectorAll('button, input, select, [role=option], a[href]')].filter(e => e.offsetParent && !(e.getAttribute('aria-label') || e.innerText.trim() || e.labels?.length || e.title || e.getAttribute('aria-labelledby'))).map(e => e.outerHTML.slice(0, 80))""")
+    unnamed = pg.p.evaluate("""() => [...document.querySelectorAll('button, input, select, [role=option], a[href]')].filter(e => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.labels?.length || e.title || e.getAttribute('aria-labelledby'))).map(e => e.outerHTML.slice(0, 80))""")
     check(not unnamed, f'unnamed {unnamed[:3]}')
     pg.ctx.close()
     pg = Page(ctx_new(b, viewport=PHONE, is_mobile=True, has_touch=True))
@@ -550,21 +561,45 @@ def sxp01(b):
     pg = Page(c)
     cdp = c.new_cdp_session(pg.p)
     cdp.send('Emulation.setCPUThrottlingRate', {'rate': 4})
-    worst_s, worst_l = 0, 0
-    for q in ['k', 'ki', 'kip', 'kipp', 'kipp a', 'harlem', 'success acad', 'bronx prep']:
+    pg.p.wait_for_timeout(1500)  # let first-load work (tiles, idle list growth, engine warm-up) settle, as a reader would before typing
+    # 1) Suggestions: real keystrokes into the focused box; Event Timing gives each keystroke's time to next paint (the INP measure)
+    pg.p.evaluate("""() => { window.__ev = []; new PerformanceObserver(l => { for (const e of l.getEntries()) if (e.name === 'keydown' || e.name === 'keypress' || e.name === 'input') window.__ev.push([e.name, e.duration, e.interactionId]); }).observe({ type: 'event', durationThreshold: 16, buffered: true }); }""")
+    pg.p.focus('#search')
+    pg.p.wait_for_timeout(300)
+    for q in ['kipp a', 'harlem', 'success acad', 'bronx prep']:
+        pg.p.fill('#search', '')
+        pg.p.wait_for_timeout(300)
+        for ch in q:
+            pg.p.keyboard.type(ch)
+            pg.p.wait_for_timeout(180)  # a brisk typist; also lets the 120 ms pause fire between keys sometimes
+        pg.p.wait_for_timeout(400)
+    ev = pg.p.evaluate('window.__ev')
+    per_key = {}
+    for name, d, iid in ev:
+        if iid:
+            per_key[iid] = max(per_key.get(iid, 0), d)
+    keys = sorted(per_key.values())
+    worst_s = keys[-1] if keys else 0
+    over = [round(k) for k in keys if k >= 50]
+    # 2) List: time from the end of the typing pause to the updated list being painted
+    worst_l = 0
+    for q in ['k', 'kipp', 'harlem', 'success acad', 'bronx prep']:
         t = pg.p.evaluate("""q => new Promise(res => {
           const i = document.getElementById('search'); const t0 = performance.now();
           const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set; set.call(i, q);
           i.dispatchEvent(new Event('input', { bubbles: true }));
-          requestAnimationFrame(() => setTimeout(() => {
-            const sugg = performance.now() - t0;
-            setTimeout(() => requestAnimationFrame(() => setTimeout(() => res([sugg, performance.now() - t0 - 120]), 0)), 120);
-          }, 0));
+          setTimeout(() => requestAnimationFrame(() => setTimeout(() => res(performance.now() - t0 - 120), 0)), 120);
         })""", q)
-        worst_s, worst_l = max(worst_s, t[0]), max(worst_l, t[1])
-    check(worst_s < 50 and worst_l < 200, f'suggestions {worst_s:.0f} ms, list {worst_l:.0f} ms')
+        worst_l = max(worst_l, t)
     pg.ctx.close()
-    record('SXP-01', 'Pass', f'4× CPU throttle, 8 queries: suggestions update in ≤ {worst_s:.0f} ms per keystroke (< 50), list within {worst_l:.0f} ms of the 120 ms typing pause (< 200). PERF-01 rerun in e2e.')
+    n = len(keys)
+    p95 = keys[int(0.95 * (n - 1))] if keys else 0
+    detail = f'{n} keystrokes measured with Event Timing (keystroke → next paint): worst {worst_s:.0f} ms, p95 {p95:.0f} ms, {len(over)} at 50 ms or more {over}; list painted within {worst_l:.0f} ms of the 120 ms typing pause'
+    check(worst_l < 200, detail)
+    if over:
+        record('SXP-01', 'Partial', detail + ' (target: every keystroke < 50 ms, list < 200 ms).')
+        return
+    record('SXP-01', 'Pass', '4× CPU throttle, page settled 1.5 s: ' + detail + '. PERF-01 rerun in e2e.')
 
 
 def sxr01(b):

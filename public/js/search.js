@@ -11,6 +11,7 @@
   else (root.NCS = root.NCS || {}).search = api;
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
+  const NAME_COLLATOR = new Intl.Collator('en', { sensitivity: 'base' }); // one collator: localeCompare with options builds one per call
 
   const MAX_QUERY = 100;
   const NYC_ZIP_RANGES = [[10001, 10282], [10301, 10314], [10451, 10475], [11004, 11005], [11101, 11109], [11201, 11256], [11351, 11436], [11691, 11697]];
@@ -379,7 +380,7 @@
       return (a, b) => {
         const x = r.hits.get(a.id);
         const y = r.hits.get(b.id);
-        return x.tier - y.tier || y.score - x.score || a.name.localeCompare(b.name, 'en', { sensitivity: 'base' });
+        return x.tier - y.tier || y.score - x.score || NAME_COLLATOR.compare(a.name, b.name);
       };
     }
 
@@ -484,18 +485,25 @@
     }
 
     /** Closest school, network or place name for a query that matched nothing (word-by-word trigram similarity). */
+    // trigram sets are cached per word: candidates are fixed, so after the first miss this is cheap
+    const gramCache = new Map();
+    const grams = (w) => {
+      let g = gramCache.get(w);
+      if (!g) {
+        const t = `  ${w} `;
+        g = new Set();
+        for (let i = 0; i < t.length - 2; i++) g.add(t.slice(i, i + 3));
+        if (gramCache.size < 20000) gramCache.set(w, g);
+      }
+      return g;
+    };
+    const labelWords = new Map();
     function didYouMean(q) {
       const p = parse(q, places);
-      const qWords = p.groups.map((g) => g.typed).join(' ').split(' ').filter((w) => w.length >= 3);
+      const qWords = p.groups.map((g) => g.typed).join(' ').split(' ').filter((w) => w.length >= 3 && w.length <= 30).slice(0, 6);
       if (!qWords.length || qWords.join('').length < 4) return null;
-      const grams = (s) => {
-        const t = `  ${s} `;
-        const g = new Set();
-        for (let i = 0; i < t.length - 2; i++) g.add(t.slice(i, i + 3));
-        return g;
-      };
-      const sim = (a, b) => {
-        const x = grams(a);
+      const qGrams = qWords.map((w) => { const t = `  ${w} `; const g = new Set(); for (let i = 0; i < t.length - 2; i++) g.add(t.slice(i, i + 3)); return g; });
+      const sim = (x, b) => {
         const y = grams(b);
         let inter = 0;
         for (const v of x) if (y.has(v)) inter++;
@@ -503,10 +511,22 @@
       };
       let best = null;
       const consider = (label) => {
-        const cw = words(label);
+        let cw = labelWords.get(label);
+        if (!cw) {
+          const base = words(label);
+          // also try adjacent words run together, so "harlemvillage" still finds "Harlem Village"
+          cw = base.concat(base.slice(1).map((w, i) => base[i] + w));
+          labelWords.set(label, cw);
+        }
         if (!cw.length) return;
         // every typed word should resemble some word of the candidate; average the best match per typed word
-        const score = qWords.reduce((a, w) => a + Math.max(...cw.map((c) => sim(w, c))), 0) / qWords.length;
+        let total = 0;
+        for (const x of qGrams) {
+          let m = 0;
+          for (const c of cw) { const v = sim(x, c); if (v > m) m = v; }
+          total += m;
+        }
+        const score = total / qGrams.length;
         if (!best || score > best.score || (score === best.score && label.length < best.label.length)) best = { label, query: label, score };
       };
       for (const n of networks.values()) consider(n.name);

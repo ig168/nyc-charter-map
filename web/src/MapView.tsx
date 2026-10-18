@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useDeferredValue, useEffect, useRef, useState } from 'react';
 import { useApp } from './App';
 import type { Origin, SchoolSummary } from './types';
 import { BKEY, BOROUGHS, boroughName, clusterLib, core, debounce, esc, fmtNum, gradeLabel, lang, NYC_CENTER, t } from './lib';
@@ -43,8 +43,10 @@ export function MapView() {
   const [notice, setNotice] = useState<{ text: string; kind: string }>({ text: '', kind: '' });
   const [areaPill, setAreaPill] = useState(false);
   // Leaflet lives outside React; this ref always holds the latest app state for its callbacks.
+  // Pins redraw at lower priority than the chip/box the user just touched (keeps filter clicks < 200 ms, PERF-01)
+  const deferredFiltered = useDeferredValue(app.filtered);
   const A = useRef(app);
-  A.current = app;
+  A.current = { ...app, filtered: deferredFiltered };
   const M = useRef<any>(null); // { map, markerLayer, markers, ... }
 
   // ---- Create the map once -------------------------------------------------------------------
@@ -366,12 +368,21 @@ export function MapView() {
   useEffect(() => {
     const st = M.current;
     if (!st) return;
-    const h = setTimeout(() => {
+    // Same set of schools in a new order (e.g. typing switches to "best match")? The pins don't change.
+    const sig = (deferredFiltered as SchoolSummary[]).map((s) => s.id).sort().join('|');
+    const key = { sig, saved: app.saved, sel: app.selectedId, origin: app.origin, lang: app.lang };
+    const prev = st.lastKey;
+    if (prev && prev.sig === key.sig && prev.saved === key.saved && prev.sel === key.sel && prev.origin === key.origin && prev.lang === key.lang) return;
+    // Idle-time, so a keystroke or click arriving meanwhile is handled first (SXP-01); 250 ms cap keeps pins prompt.
+    const ric: any = (window as any).requestIdleCallback || ((f: () => void) => setTimeout(f, 0));
+    const cic: any = (window as any).cancelIdleCallback || clearTimeout;
+    const h = ric(() => {
+      st.lastKey = key;
       st.renderMarkers();
       st.refreshPopup();
-    }, 0);
-    return () => clearTimeout(h);
-  }, [app.filtered, app.saved, app.selectedId, app.origin, app.lang]);
+    }, { timeout: 250 });
+    return () => cic(h);
+  }, [deferredFiltered, app.saved, app.selectedId, app.origin, app.lang]);
 
   // Fit the map to the results when a filter asks for it (borough, district, zip, clear all, first load)
   useEffect(() => {
